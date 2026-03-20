@@ -74,7 +74,7 @@
                 <!-- Populated by JS -->
             </div>
 
-            <!-- Review Form -->
+            <!-- Review Form via Star Rating -->
             <div class="glass-card p-4 mb-4">
                 <h4 class="mb-4 fw-bold">Write Your Review</h4>
                 <form id="review-form">
@@ -89,11 +89,14 @@
                         </div>
                         <input type="hidden" id="rating-value" value="0" required>
                     </div>
+                 <!-- Review textarea -->
+
                     <div class="mb-4">
                         <label for="review-text" class="form-label text-light fw-medium">Your Review</label>
                         <textarea class="form-control custom-textarea" id="review-text" rows="4"
                             placeholder="Share your thoughts about this..." required></textarea>
                     </div>
+                <!--Submit Review Button-->
 
                     <button type="submit" class="btn btn-submit-review w-100">
                         <i class="bi bi-send-arrow-up"></i> Submit Review</button>
@@ -109,7 +112,7 @@
                     </div>
                 </div>
                 <div id="reviews-list" class="d-flex flex-column gap-3">
-                    <!-- Populated by JS -->
+                    <!-- Empty placeholder for reviews -->
                 </div>
             </div>
         </div>
