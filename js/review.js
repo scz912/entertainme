@@ -1,6 +1,6 @@
 const mockData = {
-    1: { id: 1, title: 'Avengers', type: 'Movie', year: '2012', image: 'https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=500&q=80', description: 'Earth\'s mightiest heroes must come together and learn to fight as a team if they are going to stop the mischievous Loki and his alien army from enslaving humanity.', rating: 4.5, totalReviews: 1205 },
-    2: { id: 2, title: 'Batman', type: 'Movie', year: '2022', image: 'https://images.unsplash.com/photo-1620336655055-088d06e36bf0?w=500&q=80', description: 'When the Riddler, a sadistic serial killer, begins murdering key political figures in Gotham, Batman is forced to investigate the city\'s hidden corruption.', rating: 4.2, totalReviews: 854 }
+    1: { id: 1, title: 'Avengers', type: 'Movie', genre: 'Action', year: '2012', image: 'https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=500&q=80', description: 'Earth\'s mightiest heroes must come together and learn to fight as a team if they are going to stop the mischievous Loki and his alien army from enslaving humanity.', rating: 4.5, totalReviews: 1205 },
+    2: { id: 2, title: 'Batman', type: 'Movie', genre: 'Romance', year: '2022', image: 'https://images.unsplash.com/photo-1620336655055-088d06e36bf0?w=500&q=80', description: 'When the Riddler, a sadistic serial killer, begins murdering key political figures in Gotham, Batman is forced to investigate the city\'s hidden corruption.', rating: 4.2, totalReviews: 854 }
 };
 // Store current reviews (this acts like your database for now)
 let currentReviews = [
@@ -33,7 +33,7 @@ function renderItemDetails(item) {
             <div class="mb-2">
                 <span class="badge badge-type mb-3">${typeLabel}</span>
                 <h1 class="mb-2 fw-bold" style="font-size: 2.2rem;">${item.title}</h1>
-                <p class="text-muted mb-4">${item.year} &nbsp;&middot;&nbsp; Action</p>
+                <p class="text-muted mb-4">${item.year} &nbsp;&middot;&nbsp; ${item.genre}</p>
                 <p class="text-light mb-4 lh-lg">${item.description}</p>
                 <div class="d-flex align-items-center gap-2 star-rating">
                     ${starsHtml}
