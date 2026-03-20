@@ -61,7 +61,7 @@
        <div class="container mt-5 mb-5">
         <div class="col-lg-10 mx-auto">
             <!-- Back Button -->
-            <div class="mb-4">
+            <div class="back-btn mb-4">
                 <button onclick="history.back()"
                     class="d-inline-flex align-items-center gap-2 custom-back-btn">
                     <i class="bi bi-arrow-left"></i>
@@ -70,17 +70,17 @@
             </div>
 
             <!-- Item Details -->
-            <div id="item-details" class="row mb-4 glass-card p-4 mx-0">
+            <div id="item-details" class="row mb-4 review-glass-card p-4 mx-0">
                 <!-- Populated by JS -->
             </div>
 
             <!-- Review Form via Star Rating -->
-            <div class="glass-card p-4 mb-4">
+            <div class="review-glass-card p-4 mb-4">
                 <h4 class="mb-4 fw-bold">Write Your Review</h4>
                 <form id="review-form">
                     <div class="mb-3">
                         <label class="form-label text-light fw-medium">Your Rating</label>
-                        <div class="star-rating-input d-flex gap-2" id="star-input">
+                        <div class="review-star-rating-input d-flex gap-2" id="review-star-input">
                             <i class="bi bi-star" data-rating="1"></i>
                             <i class="bi bi-star" data-rating="2"></i>
                             <i class="bi bi-star" data-rating="3"></i>
@@ -93,18 +93,18 @@
 
                     <div class="mb-4">
                         <label for="review-text" class="form-label text-light fw-medium">Your Review</label>
-                        <textarea class="form-control custom-textarea" id="review-text" rows="4"
+                        <textarea class="form-control review-textarea" id="review-text" rows="4"
                             placeholder="Share your thoughts about this..." required></textarea>
                     </div>
                 <!--Submit Review Button-->
 
-                    <button type="submit" class="btn btn-submit-review w-100">
+                    <button type="submit" class="btn review-submit-btn w-100">
                         <i class="bi bi-send-arrow-up"></i> Submit Review</button>
                 </form>
             </div>
 
             <!-- Existing Reviews -->
-            <div class="glass-card p-4">
+            <div class="review-glass-card p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h4 class="fw-bold mb-0">Reviews</h4>
                     <div id="average-rating-display" class="d-flex align-items-center gap-2">

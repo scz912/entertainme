@@ -68,3 +68,108 @@ body {
 .btn-logout:hover {
     background: rgba(255, 77, 240, 0.1);
 }
+
+/* Review Page Styles */
+.review-glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+}
+.item-poster {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    object-fit: cover;
+    aspect-ratio: 2/3;
+}
+
+.star-rating {
+    color: #ffc107;
+    font-size: 1.1rem;
+}
+
+.review-star-rating-input i {
+    color: #4b5563;
+    font-size: 2.5rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.review-star-rating-input i:hover,
+.review-star-rating-input i.active {
+    color: #ffc107;
+}
+.review-textarea {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.review-textarea:focus {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: #ff4df0;
+    color: white;
+    box-shadow: 0 0 0 0.25rem rgba(255, 77, 240, 0.25);
+}
+
+.review-textarea::placeholder {
+    color: #9ca3af;
+}
+
+.review-submit-btn {
+    background: linear-gradient(to right, #ff4df0, #8b5cf6);
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    transition: 0.3s;
+}
+
+.review-submit-btn:hover {
+    opacity: 0.9;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.review-item {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.review-meta {
+    font-size: 0.9rem;
+    color: #cbd5e1;
+}
+
+.review-badge {
+    background: linear-gradient(to right, #ff4df0, #8b5cf6);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: normal;
+}
+
+.review-text-muted {
+    color: #cbd5e1 !important;
+}
+
+.custom-back-btn {
+    transition: 0.3s;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 24px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: white;
+}
+
+.custom-back-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white !important;
+}
