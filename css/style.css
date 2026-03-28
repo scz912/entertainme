@@ -177,3 +177,51 @@ body {
     background: rgba(255, 255, 255, 0.1);
     color: white !important;
 }
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 400px;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+#auth-logo {
+    font-size: 64px;
+    margin-bottom: 10px;
+    display: block;
+    text-align: center;
+    text-shadow: 0 0 20px rgba(255, 77, 240, 0.5);
+}
+
+#auth-text {
+    font-size: 28px;
+    text-align: center;
+    font-weight: bold;
+    background: linear-gradient(to right, #ff4df0, #8b5cf6);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.direct-link {
+    color: #ff4df0;
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.3s ease;
+    opacity: 0.8;
+}
+.direct-link:hover {
+    color: #ffb3f7;
+    opacity: 1;
+    text-decoration: underline;
+}

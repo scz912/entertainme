@@ -86,10 +86,15 @@
             <div class="logo-icon" id="auth-logo">🎬</div>
             <div class="logo-text" id="auth-text">EntertainMe</div>
             <div style="text-align: center;">
-                <h4>Welcome Back</h4>
-                <p class="text-white-50" style="opacity: 0.8;">Sign in to continue your journey</p>
+                <h4>Create Account</h4>
+                <p class="text-white-50" style="opacity: 0.8;">Join us to explore entertainment</p>
             </div>
             <form>
+                <div class="text-start mb-1 small opacity-50">Full Name</div>
+                <div class="input-group-custom">
+                    <i class="bi bi-envelope"></i>
+                    <input type="text" placeholder="Your Name">
+                </div>
                 <div class="text-start mb-1 small opacity-50">Email</div>
                 <div class="input-group-custom">
                     <i class="bi bi-envelope"></i>
@@ -101,34 +106,49 @@
                     <input type="password" id="passwordInput" placeholder="••••••••">
                     <i class="bi bi-eye" id="togglePassword" style="color: white; opacity: 0.5; cursor: pointer;"></i>
                 </div>
+                <div class="text-start mb-1 small opacity-50">Confirm Password</div>
+                <div class="input-group-custom">
+                    <i class="bi bi-lock"></i>
+                    <input type="password" id="confirmPasswordInput" placeholder="••••••••">
+                    <i class="bi bi-eye" id="toggleConfirmPassword" style="color: white; opacity: 0.5; cursor: pointer;"></i>
+                </div>
             </form>
-            <div class="text-end mt-2">
-                <a href="forgot-password.html" class="direct-link small">Forgot password?</a>
-            </div>
-            <button type="submit" class="btn-signin w-100 mt-4">Sign In</button><br>
+            <button type="submit" class="btn-signin w-100 mt-4">Create Account</button><br>
             <div style="text-align: center;">
-                <p class="text-white-50" style="opacity: 0.8;">or continue with</p>
+                <p class="text-white-50" style="opacity: 0.8;">or sign up with</p>
                 <a href="https://accounts.google.com/signin" class="btn-google w-100">
                     <i class="bi bi-google me-2"></i>Google</a>
-            <span style="opacity:0.6; font-size:14px;">Don't have an account?</span>
-            <a href="signup.html" class="direct-link">Sign up</a>
+            <span style="opacity:0.6; font-size:14px;">Already have an account?</span>
+            <a href="login.html" class="direct-link">Sign In</a>
+            </div>
+            <div style="text-align: center; margin: 15px 0; opacity: 0.5; font-size: 12px; line-height: 1.5;">
+                By creating an account, you agree to our 
+                <a href="terms-privacy.html" class="direct-link">Terms of Service</a> 
+                and 
+                <a href="terms-privacy.html" class="direct-link">Privacy Policy</a>.
             </div>
         </div>
     </div>
-    
     <script>
-        const togglePassword = document.querySelector('#togglePassword');
-        const password = document.querySelector('#passwordInput');
+    function setupPasswordToggle(toggleId, inputId) {
+        const toggleElement = document.querySelector(toggleId);
+        const inputElement = document.querySelector(inputId);
 
-        togglePassword.addEventListener('click', function () {
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
+        toggleElement.addEventListener('click', function () {
+            // Toggle the type attribute
+            const type = inputElement.getAttribute('type') === 'password' ? 'text' : 'password';
+            inputElement.setAttribute('type', type);
             
+            // Toggle the eye icon classes
             this.classList.toggle('bi-eye');
             this.classList.toggle('bi-eye-slash');
             
+            // Toggle the opacity
             this.style.opacity = type === 'text' ? '1' : '0.5';
         });
-    </script>
+    }
+    setupPasswordToggle('#togglePassword', '#passwordInput');
+    setupPasswordToggle('#toggleConfirmPassword', '#confirmPasswordInput');
+</script>
 </body>
 </html>
