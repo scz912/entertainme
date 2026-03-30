@@ -7,10 +7,19 @@ body {
     min-height: 100vh;
 }
 
+@media (max-width: 991px) {
+    .container{
+        max-width: unset;
+    }
+}
+
 .custom-navbar {
     background: rgba(2, 6, 23, 0.7);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    position: sticky;
+    top: 0;
+    z-index: 999;
 }
 
 .logo-text {
@@ -281,4 +290,66 @@ input::-ms-clear {
 
 .btn-auth:active {
     transform: translateY(0);
+}
+
+
+#homepage{
+    h1{
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    h2{
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    h5{
+        font-weight: 400;
+        margin-bottom: 1rem;
+    }
+    .section{
+        margin-top: 60px;
+        margin-bottom: 60px;
+    }
+    .bannersection{
+        margin-top: 0;
+        width: 100%;
+        height: fit-content;
+        border-radius: 16px;
+        background-image: url("../img/homebannerbg.jpg");
+        background-position: 100% 50%;
+        position: relative;
+    }
+    .bannercontentbgfill{
+        background: linear-gradient(to right, #4c3466, #e81ade);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 16px;
+        opacity: 0.5;
+        height: 100%;
+        width: 100%;
+        z-index: 0;
+        position: absolute;
+    }
+    .bannercontent{
+        padding: 4rem 3rem;
+        z-index: 1;
+        position: relative;
+    }
+    .logos-container{
+        display: flex;
+        max-width: 100%;
+        width: fit-content;
+        grid-column-gap: 1rem;
+        padding-top: 1rem;
+    }
+    .logos-content{
+        display: flex;
+        grid-column-gap: 0.5rem;
+        align-items: center;
+        p{
+            margin-bottom: 0;
+        }
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        background: rgba(124, 124, 124, 0.5);
+    }
 }
