@@ -1,4 +1,3 @@
-// MOCK DATA 
 const allItems = [
     {
         id: 1,
@@ -38,7 +37,6 @@ const allItems = [
     }
 ];
 
-// STATE 
 let filters = {
     search: "",
     type: "all",
@@ -50,76 +48,21 @@ let filters = {
 let watchlist = new Set();
 
 document.addEventListener("DOMContentLoaded", () => {
-    setupFilters();
     renderItems(allItems);
 });
 
-// SETUP FILTER EVENTS
-function setupFilters() {
-    document.getElementById("searchInput").addEventListener("input", (e) => {
-        filters.search = e.target.value.toLowerCase();
-        applyFilters();
-    });
-
-    document.getElementById("typeFilter").addEventListener("change", (e) => {
-        filters.type = e.target.value;
-        applyFilters();
-    });
-
-    document.getElementById("genreFilter").addEventListener("change", (e) => {
-        filters.genre = e.target.value;
-        applyFilters();
-    });
-
-    document.getElementById("yearFilter").addEventListener("change", (e) => {
-        filters.year = e.target.value;
-        applyFilters();
-    });
-
-    document.getElementById("ratingFilter").addEventListener("change", (e) => {
-        filters.rating = e.target.value;
-        applyFilters();
-    });
-
-    document.getElementById("clearBtn").addEventListener("click", () => {
-        filters = { search: "", type: "all", genre: "all", year: "all", rating: "all" };
-        document.querySelectorAll("select").forEach(s => s.value = "all");
-        document.getElementById("searchInput").value = "";
-        applyFilters();
-    });
-}
-
-// FILTER LOGIC 
-function applyFilters() {
-    let filtered = allItems.filter(item => {
-        return (
-            (filters.search === "" || item.title.toLowerCase().includes(filters.search)) &&
-            (filters.type === "all" || item.type === filters.type) &&
-            (filters.genre === "all" || item.genre === filters.genre) &&
-            (filters.year === "all" || item.year.toString() === filters.year) &&
-            (filters.rating === "all" || item.rating >= parseFloat(filters.rating))
-        );
-    });
-
-    renderItems(filtered);
-}
-
-// RENDER CARDS
 function renderItems(items) {
-    const container = document.getElementById("results");
-    const count = document.getElementById("resultCount");
-
-    count.innerText = `${items.length} Results`;
+    const container = document.getElementById("trendinglist");
 
     if (items.length === 0) {
-        container.innerHTML = `<p class="text-center text-muted mt-4">No results found</p>`;
+        container.innerHTML = `<p class="text-center text-muted mt-4">Error finding trending works</p>`;
         return;
     }
 
-    let html = "";
+    container.innerHTML = "";
 
     items.forEach(item => {
-        html += `
+        container.innerHTML+= `
         <div class="col-md-3" id="trendingitem${item.id}">
             <div class="custom-card">
                 <img src="${item.image}" class="card-img">
@@ -148,8 +91,6 @@ function renderItems(items) {
         </div>
         `;
     });
-
-    container.innerHTML = html;
 }
 
 function rendersingleItem(cardholder,id){
