@@ -93,12 +93,25 @@
         <h2>
           Top Charts
         </h2>
+        <div class="filterslider">
+          <div class="filtercontainer moviefilter" onclick="applyfilter(`movie`)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-film w-5 h-5 text-pink-400" data-fg-q5z11="1.35:14.805:/src/app/pages/HomePage.tsx:41:15:1739:42:e:Film::::::DEHS" data-fgid-q5z11=":r1i:"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M7 3v18"></path><path d="M3 7.5h4"></path><path d="M3 12h18"></path><path d="M3 16.5h4"></path><path d="M17 3v18"></path><path d="M17 7.5h4"></path><path d="M17 16.5h4"></path></svg>
+            <p>Movies</p>
+          </div>
+          <div class="filtercontainer musicfilter" onclick="applyfilter(`music`)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-music w-5 h-5 text-purple-400" data-fg-q5z15="1.35:14.805:/src/app/pages/HomePage.tsx:45:15:1976:45:e:Music::::::CB4p" data-fgid-q5z15=":r1l:"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+            <p>Music</p>
+          </div>
+          <div class="filtercontainer bookfilter" onclick="applyfilter(`book`)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open w-5 h-5 text-blue-400" data-fg-q5z19="1.35:14.805:/src/app/pages/HomePage.tsx:49:15:2215:46:e:BookOpen::::::BP4H" data-fgid-q5z19=":r1o:"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg>
+            <p>Books</p>
+          </div>
+        </div>
         <div id="topchartlist" class="row g-4"></div>
       </div>
     </div>
   </main>
-  <script src="js/trendingloader.js"></script>
-  <!-- <script src="js/main.js"></script> -->
+  <script src="js/main.js"></script>
 </body>
 
 </html>
