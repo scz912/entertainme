@@ -120,7 +120,7 @@ function renderItems(items) {
 
     items.forEach(item => {
         html += `
-        <div class="col-md-3">
+        <div class="col-md-3" id="trendingitem${item.id}">
             <div class="custom-card">
                 <img src="${item.image}" class="card-img">
 
@@ -152,13 +152,43 @@ function renderItems(items) {
     container.innerHTML = html;
 }
 
+function rendersingleItem(cardholder,id){
+    item = allItems.find(it => it.id === id);
+    cardholder.innerHTML = `
+        <div class="custom-card">
+                <img src="${item.image}" class="card-img">
+
+                <span class="badge-type">${item.type.toUpperCase()}</span>
+                <i class="bi ${watchlist.has(id) ? "bi-bookmark-check active-bookmark" : "bi-bookmark"} 
+                bookmark-icon" onclick="toggleBookmark(${id})"></i>
+                <div class="card-body">
+                    <h6>${item.title}</h6>
+                    <div class="d-flex justify-content-between small text-muted">
+                        <span>${item.year}</span>
+                        <span>${item.genre}</span>
+                    </div>
+                    <div class="rating">
+                        ${generateStars(item.rating)} 
+                        <span class="ms-1">${item.rating}</span>
+                    </div>
+                </div>
+                <div class="view-overlay">
+                    <button onclick="viewDetails(${item.id})">
+                        <i class="bi bi-play-fill"></i> View Details
+                    </button>
+                </div>
+            </div>
+    `;
+}
+
 function toggleBookmark(id) {
     if (watchlist.has(id)) {
         watchlist.delete(id);
     } else {
         watchlist.add(id);
     }
-    applyFilters(); // re-render
+    bookmarkholder = document.getElementById("trendingitem"+id);
+    rendersingleItem(bookmarkholder,id);
 }
 
 function generateStars(rating) {
