@@ -2,64 +2,92 @@
 <html>
 
 <head>
-    <title>EntertainMe</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/style.css">
+  <title>EntertainMe - Profile</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg custom-navbar">
-        <div class="container">
 
-            <!-- LOGO -->
-            <a class="navbar-brand d-flex align-items-center gap-2" href="home.html">
-                <span class="logo-icon">🎬</span>
-                <span class="logo-text">EntertainMe</span>
-            </a>
+  <nav class="navbar navbar-expand-lg custom-navbar">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="home.html">
+        <span class="logo-icon">🎬</span>
+        <span class="logo-text">EntertainMe</span>
+      </a>
 
-            <!-- MENU -->
-            <div class="collapse navbar-collapse justify-content-center">
-                <ul class="navbar-nav">
+      <div class="collapse navbar-collapse justify-content-center">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="home.html"><i class="bi bi-house"></i> Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="search.html"><i class="bi bi-search"></i> Search</a></li>
+          <li class="nav-item"><a class="nav-link" href="watchlist.html"><i class="bi bi-bookmark"></i> Watchlist</a></li>
+          <li class="nav-item"><a class="nav-link active" href="profile.html"><i class="bi bi-person"></i> Profile</a></li>
+        </ul>
+      </div>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="home.html">
-                            <i class="bi bi-house"></i>
-                            <span>Home</span>
-                        </a>
-                    </li>
+      <button class="btn btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </nav>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="search.html">
-                            <i class="bi bi-search"></i>
-                            <span>Search</span>
-                        </a>
-                    </li>
+  <!-- PROFILE CONTENT -->
+    <div class="d-flex justify-content-center align-items-center" 
+      style="min-height: calc(100vh - 80px);">
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="watchlist.html">
-                            <i class="bi bi-bookmark"></i>
-                            <span>Watchlist</span>
-                        </a>
-                    </li>
+    <div style="width: 100%; max-width: 420px;">
 
-                    <li class="nav-item">
-                        <a class="nav-link active" href="profile.html">
-                            <i class="bi bi-person"></i>
-                            <span>Profile</span>
-                        </a>
-                    </li>
+      <div class="auth-card">
 
-                </ul>
-            </div>
+        <h4 class="text-center mb-4">My Profile</h4>
 
-            <!-- LOGOUT -->
-            <button class="btn btn-logout"><i class="bi bi-box-arrow-right"></i> Logout</button>
-
+        <!-- NAME -->
+        <div class="text-start small opacity-50">Full Name</div>
+        <div class="input-group-custom">
+          <input type="text" id="name" disabled>
         </div>
-    </nav>
 
-    <script src="js/main.js"></script>
+        <!-- EMAIL -->
+        <div class="text-start small opacity-50">Email</div>
+        <div class="input-group-custom">
+          <input type="email" id="email" disabled>
+        </div>
+
+        <!-- PHONE -->
+        <div class="text-start small opacity-50">Phone</div>
+        <div class="input-group-custom">
+          <input type="text" id="phone" disabled>
+        </div>
+
+        <!-- BUTTONS -->
+        <button class="btn-auth w-100 mt-3" onclick="enableEdit()">Edit Profile</button>
+        <button class="btn-auth w-100 mt-2" onclick="saveProfile()">Save Changes</button>
+
+        <hr class="my-4">
+
+        <!-- CHANGE PASSWORD -->
+        <h5 class="text-center mb-3">Change Password</h5>
+
+        <div class="input-group-custom">
+          <input type="password" id="oldPassword" placeholder="Current Password">
+        </div>
+
+        <div class="input-group-custom">
+          <input type="password" id="newPassword" placeholder="New Password">
+        </div>
+
+        <button class="btn-auth w-100 mt-2" onclick="changePassword()">Update Password</button>
+
+        <hr class="my-4">
+
+        <!-- DELETE -->
+        <button class="btn btn-danger w-100" onclick="deleteAccount()">Delete Account</button>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/profile.js"></script>
 </body>
 
 </html>
