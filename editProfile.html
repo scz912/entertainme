@@ -97,12 +97,31 @@
 
         <h5 class="text-center mb-3">Change Password</h5>
 
-        <div class="input-group-custom">
+        <div class="password-field input-group-custom">
+          <i class="bi bi-lock-fill password-lock-icon"></i>
           <input type="password" id="oldPassword" placeholder="Current Password">
+          <button class="password-toggle" type="button" onclick="togglePasswordVisibility('oldPassword', this)"
+            aria-label="Show current password">
+            <i class="bi bi-eye"></i>
+          </button>
         </div>
 
-        <div class="input-group-custom">
+        <div class="password-field input-group-custom">
+          <i class="bi bi-lock-fill password-lock-icon"></i>
           <input type="password" id="newPassword" placeholder="New Password">
+          <button class="password-toggle" type="button" onclick="togglePasswordVisibility('newPassword', this)"
+            aria-label="Show new password">
+            <i class="bi bi-eye"></i>
+          </button>
+        </div>
+
+        <div class="password-field input-group-custom">
+          <i class="bi bi-lock-fill password-lock-icon"></i>
+          <input type="password" id="confirmPassword" placeholder="Confirm New Password">
+          <button class="password-toggle" type="button" onclick="togglePasswordVisibility('confirmPassword', this)"
+            aria-label="Show confirm password">
+            <i class="bi bi-eye"></i>
+          </button>
         </div>
 
         <button class="btn-auth w-100 mt-2" onclick="changePassword()">Update Password</button>
