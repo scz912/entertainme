@@ -844,3 +844,29 @@ input::-ms-clear {
     background: linear-gradient(to right, #ff4df0, #8b5cf6);
     color: white;
 }
+
+#search{
+    #results{
+        transition: all 0.5s;
+        opacity: 0;
+        position: relative;
+        transform: translateY(5%);
+    }
+    #results.listready{
+        opacity: 1;
+        transform: translateY(0%);
+    }
+}
+
+#watchlist{
+    #watchlist-container{
+        transition: all 0.5s;
+        opacity: 0;
+        position: relative;
+        transform: translateY(5%);
+    }
+    #watchlist-container.listready{
+        opacity: 1;
+        transform: translateY(0%);
+    }
+}
