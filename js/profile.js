@@ -102,5 +102,5 @@ function deleteAccount() {
 
 function logout() {
     localStorage.removeItem("currentUser");
-    window.location.href = "login.html";
+    window.location.href = "signin.html";
 }
