@@ -91,6 +91,8 @@ function setupFilters() {
 
 // FILTER LOGIC 
 function applyFilters() {
+    const container = document.getElementById("results");
+    container.classList.remove("listready");
     let filtered = allItems.filter(item => {
         return (
             (filters.search === "" || item.title.toLowerCase().includes(filters.search)) &&
@@ -100,8 +102,9 @@ function applyFilters() {
             (filters.rating === "all" || item.rating >= parseFloat(filters.rating))
         );
     });
-
-    renderItems(filtered);
+    setTimeout(()=>{
+        renderItems(filtered);
+    },500);
 }
 
 // RENDER CARDS
@@ -150,6 +153,9 @@ function renderItems(items) {
     });
 
     container.innerHTML = html;
+    setTimeout(()=>{
+        container.classList.add("listready");
+    },100);
 }
 
 function rendersingleItem(cardholder,id){
