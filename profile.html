@@ -26,22 +26,27 @@
         </ul>
       </div>
 
-      <button class="btn btn-logout" onclick="logout()">Logout</button>
+      <button class="btn btn-logout" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</button>
     </div>
   </nav>
 
   <!-- PROFILE CONTENT -->
-    <div class="d-flex justify-content-center align-items-center" 
-      style="min-height: calc(100vh - 80px);">
+  <div class="d-flex justify-content-center align-items-center profile-page-wrap">
 
     <div style="width: 100%; max-width: 420px;">
 
-      <div class="auth-card">
+      <div class="auth-card profile-card">
 
-        <h4 class="text-center mb-4">My Profile</h4>
+        <div class="profile-header">
+          <div class="profile-avatar">
+            <i class="bi bi-person-fill"></i>
+          </div>
+          <h4>My Profile</h4>
+          <p>Manage your personal account information</p>
+        </div>
 
         <!-- NAME -->
-        <div class="text-start small opacity-50">Full Name</div>
+        <div class="text-start small opacity-50">Name</div>
         <div class="input-group-custom">
           <input type="text" id="name" disabled>
         </div>
@@ -59,31 +64,26 @@
         </div>
 
         <!-- BUTTONS -->
-        <button class="btn-auth w-100 mt-3" onclick="enableEdit()">Edit Profile</button>
-        <button class="btn-auth w-100 mt-2" onclick="saveProfile()">Save Changes</button>
-
-        <hr class="my-4">
-
-        <!-- CHANGE PASSWORD -->
-        <h5 class="text-center mb-3">Change Password</h5>
-
-        <div class="input-group-custom">
-          <input type="password" id="oldPassword" placeholder="Current Password">
-        </div>
-
-        <div class="input-group-custom">
-          <input type="password" id="newPassword" placeholder="New Password">
-        </div>
-
-        <button class="btn-auth w-100 mt-2" onclick="changePassword()">Update Password</button>
+        <a class="btn-auth w-100 mt-3" href="editProfile.html">Edit Profile</a>
 
         <hr class="my-4">
 
         <!-- DELETE -->
-        <a href=signup.html class="btn btn-danger w-100" onclick="deleteAccount()">Delete Account</a>
+        <button class="btn-delete-account w-100" onclick="openDeleteModal()">Delete Account</button>
 
       </div>
 
+    </div>
+  </div>
+
+  <div class="delete-modal-overlay" id="deleteModal" aria-hidden="true">
+    <div class="delete-modal" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+      <h4 id="deleteModalTitle">Delete Account</h4>
+      <p>Are you sure you want to permanently delete your account?</p>
+      <div class="delete-modal-actions">
+        <button class="btn-modal-cancel" type="button" onclick="closeDeleteModal()">Cancel</button>
+        <button class="btn-modal-delete" type="button" onclick="confirmDeleteAccount()">Delete</button>
+      </div>
     </div>
   </div>
 

@@ -66,16 +66,30 @@ body {
 }
 
 .btn-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     border: 1px solid rgba(255, 77, 240, 0.4);
     color: #ff4df0;
-    border-radius: 10px;
-    padding: 6px 16px;
+    border-radius: 999px;
+    padding: 8px 18px;
     background: transparent;
-    transition: 0.3s;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+    transition: all 0.3s ease;
 }
 
 .btn-logout:hover {
     background: rgba(255, 77, 240, 0.1);
+    color: #ffb3f7;
+    border-color: rgba(255, 77, 240, 0.72);
+    box-shadow: 0 0 18px rgba(255, 77, 240, 0.28);
+    transform: translateY(-2px);
+}
+
+.btn-logout i {
+    font-size: 16px;
 }
 
 /* Review Page Styles */
@@ -206,6 +220,96 @@ body {
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
+.profile-card {
+    position: relative;
+    padding: 34px;
+    background: linear-gradient(155deg, rgba(15, 23, 42, 0.74), rgba(47, 16, 73, 0.7));
+    border: 1px solid rgba(255, 77, 240, 0.16);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55), 0 0 34px rgba(139, 92, 246, 0.12);
+}
+
+.profile-card hr {
+    border-color: rgba(255, 255, 255, 0.16);
+    margin: 28px 0;
+}
+
+.profile-page-wrap {
+    min-height: calc(100vh - 80px);
+    padding: 32px 15px;
+}
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-header h4 {
+    margin: 16px 0 6px;
+    font-weight: 700;
+}
+
+.profile-header p {
+    color: #c4b5fd;
+    font-size: 14px;
+    line-height: 1.45;
+    margin: 0;
+    opacity: 0.82;
+}
+
+.profile-avatar {
+    width: 88px;
+    height: 88px;
+    margin: 0 auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 30% 25%, #ff8af5, #8b5cf6 52%, #1e1b4b 100%);
+    border: 2px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 0 26px rgba(255, 77, 240, 0.42), 0 18px 34px rgba(0, 0, 0, 0.34);
+    animation: profileAvatarFloat 4s ease-in-out infinite;
+}
+
+.profile-avatar i {
+    font-size: 46px;
+    color: white;
+    text-shadow: 0 0 14px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes profileAvatarFloat {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+.profile-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    margin-bottom: 24px;
+    color: #f5d0fe;
+    text-decoration: none;
+    font-weight: 700;
+    border: 1px solid rgba(255, 77, 240, 0.32);
+    border-radius: 999px;
+    padding: 8px 14px;
+    background: rgba(255, 77, 240, 0.08);
+    transition: all 0.3s ease;
+}
+
+.profile-back-btn:hover {
+    color: white;
+    background: rgba(255, 77, 240, 0.16);
+    box-shadow: 0 8px 22px rgba(255, 77, 240, 0.28);
+    transform: translateY(-2px);
+}
+
 #auth-logo {
     font-size: 64px;
     margin-bottom: 10px;
@@ -255,6 +359,30 @@ body {
     width: 100%;
 }
 
+.input-group-custom input:disabled {
+    cursor: not-allowed;
+    opacity: 0.72;
+}
+
+.input-group-custom.input-readonly {
+    background: rgba(0, 0, 0, 0.32);
+    border-color: rgba(255, 255, 255, 0.06);
+    opacity: 0.82;
+}
+
+.input-group-custom.input-readonly:focus-within {
+    border-color: rgba(255, 255, 255, 0.06);
+    box-shadow: none;
+    background: rgba(0, 0, 0, 0.32);
+}
+
+.readonly-helper {
+    margin: -8px 0 16px;
+    color: #a78bfa;
+    font-size: 12px;
+    opacity: 0.82;
+}
+
 input::-ms-reveal,
 input::-ms-clear {
     display: none;
@@ -290,6 +418,113 @@ input::-ms-clear {
 
 .btn-auth:active {
     transform: translateY(0);
+}
+
+.btn-delete-account {
+    background: linear-gradient(to right, #7f1d1d, #9f1239);
+    border: 1px solid rgba(248, 113, 113, 0.28);
+    color: white;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: bold;
+    box-shadow: 0 8px 22px rgba(127, 29, 29, 0.32);
+    transition: all 0.3s ease;
+}
+
+.btn-delete-account:hover {
+    background: linear-gradient(to right, #991b1b, #be123c);
+    border-color: rgba(248, 113, 113, 0.42);
+    box-shadow: 0 10px 28px rgba(159, 18, 57, 0.34);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.delete-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(2, 6, 23, 0.76);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.delete-modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.delete-modal {
+    width: 100%;
+    max-width: 420px;
+    background: linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(59, 7, 100, 0.96));
+    border: 1px solid rgba(255, 77, 240, 0.24);
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55), 0 0 28px rgba(255, 77, 240, 0.18);
+    transform: translateY(16px) scale(0.96);
+    transition: transform 0.25s ease;
+}
+
+.delete-modal-overlay.show .delete-modal {
+    transform: translateY(0) scale(1);
+}
+
+.delete-modal h4 {
+    margin-bottom: 12px;
+    color: white;
+}
+
+.delete-modal p {
+    color: #d1d5db;
+    margin-bottom: 24px;
+}
+
+.delete-modal-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-modal-cancel,
+.btn-modal-delete {
+    flex: 1;
+    border: none;
+    border-radius: 10px;
+    padding: 11px 16px;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-modal-cancel {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.btn-modal-cancel:hover {
+    background: rgba(255, 255, 255, 0.18);
+    transform: translateY(-2px);
+}
+
+.btn-modal-delete {
+    background: linear-gradient(to right, #ff4df0, #ef4444);
+    box-shadow: 0 0 18px rgba(255, 77, 240, 0.28);
+}
+
+.btn-modal-delete:hover {
+    box-shadow: 0 10px 26px rgba(255, 77, 240, 0.36);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 480px) {
+    .delete-modal-actions {
+        flex-direction: column;
+    }
 }
 
 
