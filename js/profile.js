@@ -54,6 +54,12 @@ function saveProfile() {
 function changePassword() {
     const oldPass = document.getElementById("oldPassword").value;
     const newPass = document.getElementById("newPassword").value;
+    const confirmPass = document.getElementById("confirmPassword").value;
+
+    if (!oldPass || !newPass || !confirmPass) {
+        alert("Please fill in all password fields.");
+        return;
+    }
 
     if (oldPass !== user.password) {
         alert("Current password is incorrect!");
@@ -65,12 +71,33 @@ function changePassword() {
         return;
     }
 
+    if (newPass !== confirmPass) {
+        alert("New password and confirm password do not match!");
+        return;
+    }
+
     user.password = newPass;
     localStorage.setItem("currentUser", JSON.stringify(user));
 
     alert("Password updated successfully!");
     document.getElementById("oldPassword").value = "";
     document.getElementById("newPassword").value = "";
+    document.getElementById("confirmPassword").value = "";
+}
+
+function togglePasswordVisibility(inputId, toggleButton) {
+    const input = document.getElementById(inputId);
+    const icon = toggleButton.querySelector("i");
+
+    if (!input || !icon) {
+        return;
+    }
+
+    const isHidden = input.type === "password";
+    input.type = isHidden ? "text" : "password";
+    icon.classList.toggle("bi-eye", !isHidden);
+    icon.classList.toggle("bi-eye-slash", isHidden);
+    toggleButton.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
 }
 
 function openDeleteModal() {

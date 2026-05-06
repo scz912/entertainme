@@ -394,6 +394,48 @@ input::-ms-clear {
     background: rgba(255, 255, 255, 0.05);
 }
 
+.password-field {
+    padding: 0 12px;
+}
+
+.password-field:hover {
+    border-color: rgba(255, 77, 240, 0.28);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.password-lock-icon {
+    color: #c084fc;
+    font-size: 16px;
+    text-shadow: 0 0 10px rgba(192, 132, 252, 0.38);
+    flex-shrink: 0;
+}
+
+.password-toggle {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 77, 240, 0.08);
+    color: #c4b5fd;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+}
+
+.password-toggle:hover {
+    background: rgba(255, 77, 240, 0.18);
+    color: white;
+    box-shadow: 0 0 14px rgba(255, 77, 240, 0.28);
+    transform: scale(1.05);
+}
+
+.password-toggle:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 77, 240, 0.2);
+}
+
 .btn-auth {
     background: linear-gradient(to right, #ff4df0, #8b5cf6);
     border: none;
