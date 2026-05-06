@@ -152,7 +152,7 @@ function renderTopItem(items) {
     container.innerHTML = html;
     setTimeout(()=>{
         container.classList.add("listready");
-    },250)
+    },100)
     // console.log(container);
 }
 
