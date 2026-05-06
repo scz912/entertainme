@@ -1,6 +1,6 @@
 let user = JSON.parse(localStorage.getItem("currentUser"));
 
-// ✅ 如果没有 user（Phase 1 fallback）
+// Phase 1 fallback data.
 if (!user) {
     user = {
         name: "See Chan Sing",
@@ -11,29 +11,46 @@ if (!user) {
     localStorage.setItem("currentUser", JSON.stringify(user));
 }
 
-// ✅ Load profile
 document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("name").value = user.name;
-    document.getElementById("email").value = user.email;
-    document.getElementById("phone").value = user.phone;
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const phoneInput = document.getElementById("phone");
+    const deleteModal = document.getElementById("deleteModal");
+
+    if (nameInput) {
+        nameInput.value = user.name;
+    }
+
+    if (emailInput) {
+        emailInput.value = user.email;
+    }
+
+    if (phoneInput) {
+        phoneInput.value = user.phone;
+    }
+
+    if (deleteModal) {
+        deleteModal.addEventListener("click", (event) => {
+            if (event.target === deleteModal) {
+                closeDeleteModal();
+            }
+        });
+    }
 });
 
-// ✅ Enable edit
 function enableEdit() {
-    document.getElementById("name").disabled = false;
-    document.getElementById("phone").disabled = false;
+    window.location.href = "editProfile.html";
 }
 
-// ✅ Save profile
 function saveProfile() {
     user.name = document.getElementById("name").value;
     user.phone = document.getElementById("phone").value;
 
     localStorage.setItem("currentUser", JSON.stringify(user));
     alert("Profile updated successfully!");
+    window.location.href = "profile.html";
 }
 
-// ✅ Change password
 function changePassword() {
     const oldPass = document.getElementById("oldPassword").value;
     const newPass = document.getElementById("newPassword").value;
@@ -52,17 +69,37 @@ function changePassword() {
     localStorage.setItem("currentUser", JSON.stringify(user));
 
     alert("Password updated successfully!");
+    document.getElementById("oldPassword").value = "";
+    document.getElementById("newPassword").value = "";
 }
 
-// ✅ Delete account
-function deleteAccount() {
-    if (confirm("Are you sure you want to delete your account?")) {
-        localStorage.removeItem("currentUser");
-        window.location.href = "login.html";
+function openDeleteModal() {
+    const modal = document.getElementById("deleteModal");
+
+    if (modal) {
+        modal.classList.add("show");
+        modal.setAttribute("aria-hidden", "false");
     }
 }
 
-// ✅ Logout
+function closeDeleteModal() {
+    const modal = document.getElementById("deleteModal");
+
+    if (modal) {
+        modal.classList.remove("show");
+        modal.setAttribute("aria-hidden", "true");
+    }
+}
+
+function confirmDeleteAccount() {
+    localStorage.removeItem("currentUser");
+    window.location.href = "signup.html";
+}
+
+function deleteAccount() {
+    openDeleteModal();
+}
+
 function logout() {
     localStorage.removeItem("currentUser");
     window.location.href = "login.html";
