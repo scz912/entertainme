@@ -119,14 +119,38 @@
         <!-- RESULTS -->
         <h5 id="resultCount" class="mb-3">0 Results</h5>
 
+        <div id="loadingSpinner" class="loading-container d-none">
+            <div class="spinner-border text-light" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+
+            <p class="mt-3 text-light">Loading entertainment...</p>
+        </div>
+
         <div id="results" class="row g-4"></div>
 
 
 
     </div>
 
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/search.js"></script>
-    <script src="js/profile.js"></script>
 </body>
+<style>
+    .loading-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 300px;
+    }
+
+    .spinner-border {
+        width: 3rem;
+        height: 3rem;
+        border-width: 0.35em;
+    }
+</style>
 
 </html>
