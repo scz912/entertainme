@@ -1,6 +1,8 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
+const Review = require("../models/Review");
+const Watchlist = require("../models/Watchlist");
 const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
@@ -60,6 +62,8 @@ router.put("/change-password", authMiddleware, async (req, res) => {
 // DELETE ACCOUNT
 router.delete("/profile", authMiddleware, async (req, res) => {
   try {
+    await Review.deleteMany({ userId: req.user.id });
+    await Watchlist.deleteMany({ userId: req.user.id });
     await User.findByIdAndDelete(req.user.id);
 
     res.json({ message: "Account deleted successfully" });
