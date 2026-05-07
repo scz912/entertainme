@@ -1,32 +1,43 @@
-const mockData = {
-    1: { id: 1, title: 'Avengers', type: 'Movie', genre: 'Action', year: '2012', image: 'https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=500&q=80', description: 'Earth\'s mightiest heroes must come together and learn to fight as a team if they are going to stop the mischievous Loki and his alien army from enslaving humanity.', length: '2h 50m', rating: 4.5, totalReviews: 1205 },
-    2: { id: 2, title: 'Batman', type: 'Movie', genre: 'Action', year: '2022', image: 'https://images.unsplash.com/photo-1620336655055-088d06e36bf0?w=500&q=80', description: 'When the Riddler, a sadistic serial killer, begins murdering key political figures in Gotham, Batman is forced to investigate the city\'s hidden corruption.', length: '2h 20m', rating: 4.2, totalReviews: 854 },
-    3: { id: 3, title: 'The Great Gatsby', type: 'Book', genre: 'Classic Fiction', year: '1925', image: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500&q=80', description: 'A story of the wealthy Jay Gatsby and his obsessive love for the beautiful but married Daisy Buchanan during the Roaring Twenties.', length: '218 pages', rating: 4.7, totalReviews: 3250 },
-    4: { id: 4, title: 'Abbey Road', type: 'Music', genre: 'Rock', year: '1969', image: 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=500&q=80', description: 'The eleventh studio album by the English rock band the Beatles, featuring iconic tracks and legendary production quality.', length: '47m 20s', rating: 4.9, totalReviews: 5400 }
-};
-// Store current reviews (this acts like your database for now)
-let currentReviews = [
-    { user: 'Alice119', rating: 5, date: '2025-10-15', text: 'Absolutely spectacular. The action sequences are mind-blowing.' },
-    { user: 'CriticJoe', rating: 4, date: '2024-09-22', text: 'Great entertainment, though the pacing in the middle was a bit slow.' },
-    { user: 'CasualViewer', rating: 3, date: '2023-08-10', text: 'It was okay. A bit too long for my taste.' }
-];
+const API_BASE_URL = "http://localhost:5001/api";
 
 let selectedRating = 0;
+let currentReviews = [];
+let currentItemId = null;
 
-document.addEventListener('DOMContentLoaded', () => {
-    let itemId = localStorage.getItem('id');
-    if (!itemId || !mockData[itemId]) itemId = 4;
-    const item = mockData[itemId];
 
-    renderItemDetails(item);
-    renderReviews();
+document.addEventListener('DOMContentLoaded', async () => {
+    currentItemId = localStorage.getItem("id");
+    if (!currentItemId) {
+        alert("No item selected.");
+        return;
+    }
+    await loadItemDetails(currentItemId);
+    await loadReviews(currentItemId);
+
     setupRatingInput();
     setupFormSubmission();
 });
 
+// LOAD ITEM DETAILS
+async function loadItemDetails(itemId) {
+    try {
+        const res = await fetch(`${API_BASE_URL}/items/${itemId}`);
+        const data = await res.json();  
+        if (!res.ok) {
+            alert(data.message || "Unable to load item details.");
+            return;
+        }
+        renderItemDetails(data);
+    } catch (err) {
+        console.error(err);
+        alert("Unable to connect to the backend. Please make sure the server is running.");
+    }   
+}
+
+// RENDER ITEM DETAILS ON PAGE
 function renderItemDetails(item) {
-    const starsHtml = generateStars(item.rating);
-    const typeLabel = item.type ? item.type.toUpperCase() : 'MOVIE';
+    const starsHtml = generateStars(item.rating || 0);
+    const typeLabel = item.type ? item.type.toUpperCase() : "ITEM";
     const html = `
         <div class="col-md-4">
             <img src="${item.image}" alt="${item.title}" class="item-poster">
@@ -35,12 +46,23 @@ function renderItemDetails(item) {
             <div class="mb-2">
                 <span class="badge badge-type mb-3">${typeLabel}</span>
                 <h1 class="mb-2 fw-bold" style="font-size: 2.2rem;">${item.title}</h1>
-                <p class="text-muted mb-4">${item.year} &nbsp;&middot;&nbsp; ${item.genre} &nbsp;&middot;&nbsp; <i class="bi ${item.type === 'Book' ? 'bi-book' : item.type === 'Music' ? 'bi-music-note-beamed' : 'bi-clock'}"></i> ${item.length}</p>
-                <p class="text-light mb-4 lh-lg">${item.description}</p>
+                <p class="text-muted mb-4">
+                    ${item.year || ""}
+                    &nbsp;&middot;&nbsp;
+                    ${item.genre || ""}
+                    &nbsp;&middot;&nbsp;
+                    <i class="bi ${item.type === "Book" ? "bi-book" : item.type === "Music" ? "bi-music-note-beamed" : "bi-clock"}"></i>
+                    ${item.length || ""}
+                </p>
+
+                <p class="text-light mb-4 lh-lg">
+                    ${item.description || ""}
+                </p>
+
                 <div class="d-flex align-items-center gap-2 star-rating">
                     ${starsHtml}
-                    <span class="text-light ms-2 fw-bold">${item.rating}</span>
-                    <span class="text-muted ms-1">(${item.totalReviews} reviews)</span>
+                    <span class="text-light ms-2 fw-bold">${Number(item.rating || 0).toFixed(1)}</span>
+                    <span class="text-muted ms-1">(${item.totalReviews || 0} reviews)</span>
                 </div>
             </div>
         </div>
@@ -48,10 +70,42 @@ function renderItemDetails(item) {
     document.getElementById('item-details').innerHTML = html;
 
     document.getElementById('average-rating-display').innerHTML = `
-        <span class="h4 mb-0 text-warning">${item.rating}</span>
+        <span class="h4 mb-0 text-warning">${Number(item.rating || 0).toFixed(1)}</span>
         <div class="star-rating">${starsHtml}</div>
     `;
 }
+
+// LOAD REVIEWS FROM BACKEND
+async function loadReviews(itemId) {
+    try {
+        const res = await fetch(`${API_BASE_URL}/reviews/item/${itemId}`);
+        const data = await res.json();
+        console.log("Reviews API response:", data);
+
+    if (!res.ok) {
+    currentReviews = [];
+    renderReviews();
+    return;
+    }
+
+    if (!Array.isArray(data)) {
+    currentReviews = [];
+    renderReviews();
+    return;
+    }
+        currentReviews = data.map(review => ({
+            user: review.userId?.name || "Unknown User",
+            rating: review.rating,
+            date: new Date(review.createdAt).toISOString().split("T")[0],
+            text: review.comment
+        }));
+        renderReviews();
+    } catch (err) {
+        console.error(err);
+        alert("Unable to connect to the backend. Please make sure the server is running.");
+    }
+}
+// RENDER REVIEWS ON PAGE
 
 function renderReviews() {
     const container = document.getElementById('reviews-list');
@@ -61,23 +115,24 @@ function renderReviews() {
     }
 
     let html = '';
-    currentReviews.forEach(r => {
+    currentReviews.forEach(review => {
         html += `
             <div class="review-item">
                 <div class="d-flex justify-content-between align-items-start mb-2">
-                    <div class="fw-bold text-light">${r.user}</div>
-                    <div class="review-meta">${r.date}</div>
+                    <div class="fw-bold text-light">${review.user}</div>
+                    <div class="review-meta">${review.date}</div>
                 </div>
                 <div class="star-rating mb-2">
-                    ${generateStars(r.rating)}
+                    ${generateStars(review.rating)}
                 </div>
-                <p class="text-muted mb-0">${r.text}</p>
+                <p class="text-muted mb-0">${review.text}</p>
             </div>
         `;
     });
     container.innerHTML = html;
 }
 
+// GENERATE STAR ICONS BASED ON RATING
 function generateStars(rating) {
     let stars = '';
     for (let i = 1; i <= 5; i++) {
@@ -94,6 +149,7 @@ function generateStars(rating) {
     }
     return stars;
 }
+// STAR RATING INPUT
 
 function setupRatingInput() {
     const stars = document.querySelectorAll('#review-star-input i');
@@ -125,6 +181,7 @@ function setupRatingInput() {
             highlightStars(selectedRating);
         });
     });
+    // Change star icons based on selected rating
 
     function highlightStars(val) {
         stars.forEach(s => {
@@ -139,7 +196,8 @@ function setupRatingInput() {
                 s.classList.add('bi-star');
             }
         });
-    
+    // Show selected rating number
+
         if (display) {
             if (val > 0) {
                 display.textContent = val.toFixed(1);
@@ -150,10 +208,11 @@ function setupRatingInput() {
         }
     }
 }
+// SUBMIT REVIEW TO BACKEND
 
 function setupFormSubmission() {
     const form = document.getElementById('review-form');
-    form.addEventListener('submit', function (e) {
+    form.addEventListener('submit', async function (e) {
         e.preventDefault();
 
         if (selectedRating == 0) {
@@ -161,16 +220,60 @@ function setupFormSubmission() {
             return;
         }
 
-        const text = document.getElementById('review-text').value;
-        const date = new Date().toISOString().split('T')[0];
+        const comment = document.getElementById("review-text").value;
 
-        currentReviews.unshift({
-            user: 'You',
-            rating: parseFloat(selectedRating),
-            date: date,
-            text: text
-        });
+        if (comment.trim() === "") {
+            alert("Please write a review before submitting.");
+            return;
+        }
+             const token = localStorage.getItem("token");
 
+        if (!token) {
+            alert("Please login before submitting a review.");
+            window.location.href = "login.html";
+            return;
+        }
+
+                try {
+            const res = await fetch(`${API_BASE_URL}/reviews`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    itemId: currentItemId,
+                    rating: parseFloat(selectedRating),
+                    comment: comment
+                })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                alert(data.message || "Failed to submit review.");
+                return;
+            }
+
+            alert("Review added successfully!");
+
+            resetReviewForm();
+
+            // Reload reviews from MongoDB after submit
+            await loadReviews(currentItemId);
+
+            // Reload item details to update average rating
+            await loadItemDetails(currentItemId);
+
+        } catch (error) {
+            console.error("Error submitting review:", error);
+            alert("Something went wrong while submitting review.");
+        }
+    });
+}
+// RESET FORM AFTER SUBMIT
+function resetReviewForm() {
+    const form = document.getElementById("review-form");
         form.reset();
         selectedRating = 0;
         document.getElementById('rating-value').value = 0;
@@ -182,6 +285,4 @@ function setupFormSubmission() {
             s.classList.add('bi-star');
         });
 
-        renderReviews();
-    });
-}
+}   
