@@ -77,7 +77,7 @@ ENTERTAINME/
 ├── editProfile.html
 ├── emailVerification.html
 ├── home.html
-├── login.html
+├── signin.html
 ├── otp.html
 ├── profile.html
 ├── review.html
@@ -94,7 +94,7 @@ ENTERTAINME/
 
 | File | Function |
 |---|---|
-| `login.html` | Login page interface |
+| `signin.html` | Login page interface |
 | `signup.html` | User registration page interface |
 | `home.html` | Homepage / dashboard showing trending and top chart entertainment |
 | `search.html` | Search and filter page for movies, music, and books |
