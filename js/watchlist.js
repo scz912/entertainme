@@ -10,7 +10,6 @@ const allItems = [
 let watchlist = new Set(allItems.map(item => item.id)); // all items "bookmarked" initially
 let currentFilterType = "all"; // Default to "all" when the page loads
 
-
 document.addEventListener("DOMContentLoaded", () => {
     renderWatchlist(currentFilterType); // Show all items by default
 });
@@ -40,7 +39,7 @@ function renderWatchlist(filterType = "all") {
 
     // Render the list of items (only the bookmarked ones)
     container.innerHTML = items.map(item => `
-         <div class="col-md-3" id="watchlistitem${item.id}">
+        <div class="col-md-3">
             <div class="custom-card">
                 <img src="${item.image}" class="card-img">
                 <span class="badge-type">${item.type.toUpperCase()}</span>
@@ -70,51 +69,15 @@ function renderWatchlist(filterType = "all") {
 
     // SETUP FILTER TABS - Update tabs and counts
     setupFilterTabs(filterType);
-    container.classList.remove("listready");
-    setTimeout(()=>{
-        container.classList.add("listready");
-    },100)
 }
 
-function rendersingleItem(cardholder,id){
-    item = allItems.find(it => it.id === id);
-    cardholder.innerHTML = `
-        <div class="custom-card">
-                <img src="${item.image}" class="card-img">
-
-                <span class="badge-type">${item.type.toUpperCase()}</span>
-                <i class="bi ${watchlist.has(id) ? "bi-bookmark-check active-bookmark" : "bi-bookmark"} 
-                bookmark-icon" onclick="toggleBookmark(${id})"></i>
-                <div class="card-body">
-                    <h6>${item.title}</h6>
-                    <div class="d-flex justify-content-between small text-muted">
-                        <span>${item.year}</span>
-                        <span>${item.genre}</span>
-                    </div>
-                    <div class="rating">
-                        ${generateStars(item.rating)} 
-                        <span class="ms-1">${item.rating}</span>
-                    </div>
-                </div>
-                <div class="view-overlay">
-                    <button onclick="viewDetails(${item.id})">
-                        <i class="bi bi-play-fill"></i> View Details
-                    </button>
-                </div>
-        </div>
-    `;
-}
-
+// TOGGLE BOOKMARK
 function toggleBookmark(id) {
-    if (watchlist.has(id)) {
-        watchlist.delete(id);
-    } else {
-        watchlist.add(id);
-    }
-    bookmarkholder = document.getElementById("watchlistitem"+id);
-    rendersingleItem(bookmarkholder,id);
+    if (watchlist.has(id)) watchlist.delete(id);
+    else watchlist.add(id);
+    renderWatchlist(currentFilterType); // Refresh view
+    updateCategoryCount(currentFilterType); // Update the category counts
 }
-
 
 // FUNCTION TO UPDATE CATEGORY COUNT
 function updateCategoryCount(filterType) {
@@ -151,11 +114,7 @@ function setupFilterTabs(selectedFilterType = "all") {
             tab.classList.add("active");
 
             // Re-render the watchlist based on the selected filter
-            const container = document.getElementById("watchlist-container");
-            container.classList.remove("listready");
-            setTimeout(()=>{
-                renderWatchlist(type);          // render only that category
-            },400);
+            renderWatchlist(type); // Pass the selected filter type to renderWatchlist
         });
 
         // Set the active class based on the filterType argument
@@ -164,7 +123,6 @@ function setupFilterTabs(selectedFilterType = "all") {
         }
     });
 }
-
 
 
 // GENERATE STAR RATING
@@ -183,3 +141,5 @@ function viewDetails(id) {
     localStorage.setItem("id", id);
     window.location.href = "review.html";
 }
+
+
