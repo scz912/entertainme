@@ -1,5 +1,3 @@
-const API_BASE_URL = "http://localhost:5001/api";
-
 let selectedRating = 0;
 let currentReviews = [];
 let currentItemId = null;
@@ -22,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadItemDetails(itemId) {
     try {
         const res = await fetch(`${API_BASE_URL}/items/${itemId}`);
-        const data = await res.json();  
+        const data = await res.json();
         if (!res.ok) {
             alert(data.message || "Unable to load item details.");
             return;
@@ -31,7 +29,7 @@ async function loadItemDetails(itemId) {
     } catch (err) {
         console.error(err);
         alert("Unable to connect to the backend. Please make sure the server is running.");
-    }   
+    }
 }
 
 // RENDER ITEM DETAILS ON PAGE
@@ -80,29 +78,38 @@ async function loadReviews(itemId) {
     try {
         const res = await fetch(`${API_BASE_URL}/reviews/item/${itemId}`);
         const data = await res.json();
+
         console.log("Reviews API response:", data);
 
-    if (!res.ok) {
-    currentReviews = [];
-    renderReviews();
-    return;
-    }
+        if (!res.ok || !Array.isArray(data)) {
+            currentReviews = [];
+            renderReviews();
+            return;
+        }
 
-    if (!Array.isArray(data)) {
-    currentReviews = [];
-    renderReviews();
-    return;
-    }
-        currentReviews = data.map(review => ({
-            user: review.userId?.name || "Unknown User",
-            rating: review.rating,
-            date: new Date(review.createdAt).toISOString().split("T")[0],
-            text: review.comment
-        }));
+        currentReviews = data.map(review => {
+            let reviewDate = "No date";
+
+            if (review.createdAt) {
+                const dateObj = new Date(review.createdAt);
+                if (!isNaN(dateObj.getTime())) {
+                    reviewDate = dateObj.toISOString().split("T")[0];
+                }
+            }
+
+            return {
+                user: review.userId?.name || "Unknown User",
+                rating: review.rating || 0,
+                date: reviewDate,
+                text: review.comment || ""
+            };
+        });
+
         renderReviews();
+
     } catch (err) {
         console.error(err);
-        alert("Unable to connect to the backend. Please make sure the server is running.");
+        alert("Unable to load reviews. Please check the review data format.");
     }
 }
 // RENDER REVIEWS ON PAGE
@@ -187,7 +194,7 @@ function setupRatingInput() {
         stars.forEach(s => {
             const starVal = parseFloat(s.getAttribute('data-rating'));
             s.classList.remove('bi-star', 'bi-star-half', 'bi-star-fill', 'active');
-            
+
             if (starVal <= val) {
                 s.classList.add('bi-star-fill', 'active');
             } else if (starVal - 0.5 === val) {
@@ -196,7 +203,7 @@ function setupRatingInput() {
                 s.classList.add('bi-star');
             }
         });
-    // Show selected rating number
+        // Show selected rating number
 
         if (display) {
             if (val > 0) {
@@ -226,15 +233,15 @@ function setupFormSubmission() {
             alert("Please write a review before submitting.");
             return;
         }
-             const token = localStorage.getItem("token");
+        const token = localStorage.getItem("token");
 
         if (!token) {
             alert("Please login before submitting a review.");
-            window.location.href = "login.html";
+            window.location.href = "signin.html";
             return;
         }
 
-                try {
+        try {
             const res = await fetch(`${API_BASE_URL}/reviews`, {
                 method: "POST",
                 headers: {
@@ -274,15 +281,15 @@ function setupFormSubmission() {
 // RESET FORM AFTER SUBMIT
 function resetReviewForm() {
     const form = document.getElementById("review-form");
-        form.reset();
-        selectedRating = 0;
-        document.getElementById('rating-value').value = 0;
-        const display = document.getElementById('rating-display');
-        if (display) display.style.display = 'none';
-        const stars = document.querySelectorAll('#review-star-input i');
-        stars.forEach(s => {
-            s.classList.remove('bi-star-fill', 'bi-star-half', 'active');
-            s.classList.add('bi-star');
-        });
+    form.reset();
+    selectedRating = 0;
+    document.getElementById('rating-value').value = 0;
+    const display = document.getElementById('rating-display');
+    if (display) display.style.display = 'none';
+    const stars = document.querySelectorAll('#review-star-input i');
+    stars.forEach(s => {
+        s.classList.remove('bi-star-fill', 'bi-star-half', 'active');
+        s.classList.add('bi-star');
+    });
 
 }   
