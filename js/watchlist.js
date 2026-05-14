@@ -1,120 +1,208 @@
-// MOCK DATA
-const allItems = [
-    { id: 1, title: "Avengers", type: "movie", genre: "Action", year: 2012, rating: 4.5, image: "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=500" },
-    { id: 2, title: "Batman", type: "movie", genre: "Action", year: 2022, rating: 4.2, image: "https://images.unsplash.com/photo-1620336655055-088d06e36bf0?w=500" },
-    { id: 3, title: "The Great Gatsby", type: "book", genre: "Classic", year: 1925, rating: 4.7, image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500" },
-    { id: 4, title: "Abbey Road", type: "music", genre: "Rock", year: 1969, rating: 4.9, image: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=500" }
-];
- 
-// TRACK BOOKMARKS — start empty
-let watchlist = new Set(allItems.map(item => item.id));
+// Store watchlist items from MongoDB
+let watchlistItems = [];
 let currentFilterType = "all";
- 
+
 document.addEventListener("DOMContentLoaded", () => {
-    setupFilterTabs(); // called ONCE here only
-    renderWatchlist(currentFilterType);
+    setupFilterTabs();
+    loadWatchlist();
 });
- 
+
+// LOAD WATCHLIST FROM BACKEND / MONGODB
+async function loadWatchlist() {
+    const token = getToken();
+
+    if (!token) {
+        alert("Please login first");
+        window.location.href = "signin.html";
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/watchlist`, {
+            method: "GET",
+            headers: authHeaders()
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || "Failed to load watchlist");
+            return;
+        }
+
+        
+        watchlistItems = data
+            .map(w => w.itemId)
+            .filter(item => item !== null && item !== undefined);
+
+        renderWatchlist(currentFilterType);
+
+    } catch (error) {
+        console.error("Error loading watchlist:", error);
+        alert("Cannot connect to backend");
+    }
+}
+
 // RENDER WATCHLIST
 function renderWatchlist(filterType = "all") {
     const container = document.getElementById("watchlist-container");
     const count = document.getElementById("watchlist-count");
- 
+
     currentFilterType = filterType;
- 
-    let items = allItems.filter(item => watchlist.has(item.id));
-    if (filterType !== "all") items = items.filter(item => item.type === filterType);
- 
-    // Update header count
-    count.innerText = `${items.length} item${items.length !== 1 ? 's' : ''} saved`;
- 
-    // Update tab counts
+
+    let items = watchlistItems;
+
+    if (filterType !== "all") {
+        items = items.filter(item => item.type === filterType);
+    }
+
+    count.innerText = `${items.length} item${items.length !== 1 ? "s" : ""} saved`;
+
     updateCategoryCount();
- 
-    // Empty state
+
     if (items.length === 0) {
-        container.innerHTML = `<p class="text-center text-muted mt-4">No items in your watchlist yet</p>`;
+        container.innerHTML = `
+            <div class="col-12">
+                <p class="text-center text-muted mt-4">
+                    No items in your watchlist yet
+                </p>
+            </div>
+        `;
         return;
     }
- 
-    // Render cards
-    container.innerHTML = items.map(item => `
-        <div class="col-md-3">
-            <div class="custom-card">
-                <img src="${item.image}" class="card-img">
-                <span class="badge-type">${item.type.toUpperCase()}</span>
-                <i class="bi bi-bookmark-check active-bookmark bookmark-icon" onclick="toggleBookmark(${item.id})"></i>
-                <div class="card-body">
-                    <h6>${item.title}</h6>
-                    <div class="d-flex justify-content-between small text-muted">
-                        <span>${item.year}</span>
-                        <span>${item.genre}</span>
+
+    container.innerHTML = items.map(item => {
+        const image = item.image || item.poster || item.coverImage || "img/homebannerbg.jpg";
+        const rating = item.rating || 0;
+
+        return `
+            <div class="col-md-3">
+                <div class="custom-card">
+                    <img src="${image}" class="card-img">
+
+                    <span class="badge-type">${(item.type || "item").toUpperCase()}</span>
+
+                    <i class="bi bi-bookmark-check active-bookmark bookmark-icon"
+                       onclick="removeFromWatchlist('${item._id}')"></i>
+
+                    <div class="card-body">
+                        <h6>${item.title || "Untitled"}</h6>
+
+                        <div class="d-flex justify-content-between small text-muted">
+                            <span>${item.year || "-"}</span>
+                            <span>${item.genre || "-"}</span>
+                        </div>
+
+                        <div class="rating">
+                            ${generateStars(rating)}
+                            <span class="ms-1">${rating}</span>
+                        </div>
                     </div>
-                    <div class="rating">
-                        ${generateStars(item.rating)}
-                        <span class="ms-1">${item.rating}</span>
+
+                    <div class="view-overlay">
+                        <button onclick="viewDetails('${item._id}')">
+                            <i class="bi bi-play-fill"></i> View Details
+                        </button>
                     </div>
-                </div>
-                <div class="view-overlay">
-                    <button onclick="viewDetails(${item.id})">
-                        <i class="bi bi-play-fill"></i> View Details
-                    </button>
                 </div>
             </div>
-        </div>
-    `).join("");
- 
+        `;
+    }).join("");
+
     container.classList.remove("listready");
     setTimeout(() => container.classList.add("listready"), 100);
 }
- 
-// TOGGLE BOOKMARK
-function toggleBookmark(id) {
-    if (watchlist.has(id)) watchlist.delete(id);
-    else watchlist.add(id);
-    renderWatchlist(currentFilterType);
+
+// REMOVE FROM WATCHLIST IN BACKEND / MONGODB
+async function removeFromWatchlist(itemId) {
+    try {
+        const res = await fetch(`${API_BASE_URL}/watchlist/${itemId}`, {
+            method: "DELETE",
+            headers: authHeaders()
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || "Failed to remove item");
+            return;
+        }
+
+        alert(data.message || "Removed from watchlist");
+
+        // Reload latest data from MongoDB
+        loadWatchlist();
+
+    } catch (error) {
+        console.error("Error removing from watchlist:", error);
+        alert("Cannot connect to backend");
+    }
 }
- 
-// UPDATE TAB COUNTS ONLY — no event listeners here
+
+// UPDATE TAB COUNTS
 function updateCategoryCount() {
     const tabs = document.querySelectorAll(".WL-filtercontainer");
+
     tabs.forEach(tab => {
         const type = tab.dataset.type;
-        const count = allItems.filter(item => watchlist.has(item.id) && (type === "all" || item.type === type)).length;
-        const icon = tab.querySelector("i").outerHTML;
-        tab.innerHTML = `${icon} ${type.charAt(0).toUpperCase() + type.slice(1)} (${count})`;
+
+        const total = watchlistItems.filter(item => {
+            return type === "all" || item.type === type;
+        }).length;
+
+        const icon = tab.querySelector("i") ? tab.querySelector("i").outerHTML : "";
+
+        let label = "All";
+        if (type === "movie") label = "Movies";
+        if (type === "music") label = "Music";
+        if (type === "book") label = "Books";
+
+        tab.innerHTML = `${icon} ${label} (${total})`;
     });
 }
- 
-// SETUP FILTER TABS — called ONCE on DOMContentLoaded
+
+// SETUP FILTER TABS
 function setupFilterTabs() {
     const tabs = document.querySelectorAll(".WL-filtercontainer");
+
     tabs.forEach(tab => {
         const type = tab.dataset.type;
- 
+
         tab.addEventListener("click", () => {
-            document.querySelectorAll(".WL-filtercontainer").forEach(t => t.classList.remove("active"));
+            document.querySelectorAll(".WL-filtercontainer")
+                .forEach(t => t.classList.remove("active"));
+
             tab.classList.add("active");
+
             const container = document.getElementById("watchlist-container");
             container.classList.remove("listready");
+
             setTimeout(() => renderWatchlist(type), 400);
         });
     });
 }
- 
+
 // GENERATE STAR RATING
 function generateStars(rating) {
+    rating = Number(rating) || 0;
+
     let stars = "";
+
     for (let i = 1; i <= 5; i++) {
-        if (i <= Math.floor(rating)) stars += '<i class="bi bi-star-fill filled"></i>';
-        else if (i - 0.5 <= rating) stars += '<i class="bi bi-star-half filled"></i>';
-        else stars += '<i class="bi bi-star"></i>';
+        if (i <= Math.floor(rating)) {
+            stars += '<i class="bi bi-star-fill filled"></i>';
+        } else if (i - 0.5 <= rating) {
+            stars += '<i class="bi bi-star-half filled"></i>';
+        } else {
+            stars += '<i class="bi bi-star"></i>';
+        }
     }
+
     return stars;
 }
- 
+
 // VIEW DETAILS
 function viewDetails(id) {
     localStorage.setItem("id", id);
-    window.location.href = "review.html";
+    window.location.href = `review.html?id=${id}`;
 }
