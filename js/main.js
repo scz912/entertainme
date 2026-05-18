@@ -1,204 +1,335 @@
-const allItems = [
-    {
-        id: 1,
-        title: "Avengers",
-        type: "movie",
-        genre: "Action",
-        year: 2012,
-        rating: 4.5,
-        image: "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=500"
-    },
-    {
-        id: 2,
-        title: "Batman",
-        type: "movie",
-        genre: "Action",
-        year: 2022,
-        rating: 4.2,
-        image: "https://images.unsplash.com/photo-1620336655055-088d06e36bf0?w=500"
-    },
-    {
-        id: 3,
-        title: "The Great Gatsby",
-        type: "book",
-        genre: "Classic",
-        year: 1925,
-        rating: 4.7,
-        image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500"
-    },
-    {
-        id: 4,
-        title: "Abbey Road",
-        type: "music",
-        genre: "Rock",
-        year: 1969,
-        rating: 4.9,
-        image: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=500"
-    }
-];
+let allItems = [];
 
 let watchlist = new Set();
 
-document.addEventListener("DOMContentLoaded", () => {
-    renderTrendingItem(allItems);
+document.addEventListener("DOMContentLoaded", async () => {
+    await loadWatchlist();
+    await loadTrendingItems();
+    await loadTopItems();
 });
 
 
-function applyfilter(filter) {
-    let filtered = allItems.filter(item => {
-        return (item.type === filter);
-    });
-    document.querySelectorAll(`.filtercontainer`).forEach(item=>{
-        if(item.classList.contains(`${filter}filter`)){
-            item.classList.add("active");
-        }else{
-            item.classList.remove("active");
+async function loadTrendingItems() {
+    try {
+        const trendingcontainer = document.getElementById("trendinglist");
+        const spinner1 = document.getElementById("loadingSpinner1");
+
+        trendingcontainer.classList.remove("listready");
+        trendingcontainer.innerHTML = "";
+
+        spinner1.classList.remove("d-none");
+
+        const res = await fetch(`${API_BASE_URL}/items`);
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || "Failed to load items");
+            return;
         }
-    })
-    const container = document.getElementById("topchartlist");
-    container.classList.remove("listready");
-    setTimeout(()=>{
-        renderTopItem(filtered);
-    },250);
+
+        allItems = data;
+
+        setTimeout(() => {
+            renderTrendingItems(allItems, trendingcontainer);
+            spinner1.classList.add("d-none");
+        }, 100);
+
+    } catch (err) {
+        console.error(err);
+        spinner1.classList.add("d-none");
+
+        document.getElementById("trendinglist").innerHTML =
+            `<p class="text-center text-danger mt-4">Cannot connect to backend API.</p>`;
+    }
 }
 
-function renderTrendingItem(items) {
-    const container = document.getElementById("trendinglist");
+async function loadTopItems() {
+    try {
+        const topchartcontainer = document.getElementById("topchartlist");
+        const spinner2 = document.getElementById("loadingSpinner2");
 
-    if (items.length === 0) {
-        container.innerHTML = `<p class="text-center text-muted mt-4">Error finding trending charts</p>`;
-        return;
+        topchartcontainer.classList.remove("listready");
+        topchartcontainer.innerHTML = "";
+
+        spinner2.classList.remove("d-none");
+
+        const res = await fetch(`${API_BASE_URL}/items`);
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || "Failed to load items");
+            return;
+        }
+
+        allItems = data;
+
+        setTimeout(() => {
+            applyfilter("movie");
+            spinner2.classList.add("d-none");
+        }, 100);
+
+    } catch (err) {
+        console.error(err);
+        spinner2.classList.add("d-none");
+
+        document.getElementById("topchartlist").innerHTML =
+            `<p class="text-center text-danger mt-4">Cannot connect to backend API.</p>`;
     }
-    html = ""
-    container.innerHTML = `<p>Loading trending charts</p>`;
+}
+
+
+
+async function loadWatchlist() {
+    try {
+        const token = getToken();
+
+        if (!token) {
+            watchlist = new Set();
+            return;
+        }
+
+        const res = await fetch(`${API_BASE_URL}/watchlist`, {
+            headers: authHeaders()
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            watchlist = new Set();
+            return;
+        }
+
+        watchlist = new Set(
+            data
+                .filter(w => w.itemId && w.itemId._id)
+                .map(w => w.itemId._id)
+        );
+
+    } catch (err) {
+        console.error("Watchlist load error:", err);
+        watchlist = new Set();
+    }
+}
+
+function applyfilter(filtertype) {
+    const topchartcontainer = document.getElementById("topchartlist");
+    topchartcontainer.classList.remove("listready");
+    var filtercontainer = document.querySelector(`.${filtertype}filter`);
+    filtercontainer.classList.add("active");
+    var otherfilters = document.querySelectorAll(`:not(.${filtertype}filter)`);
+    otherfilters.forEach(filter => {
+        filter.classList.remove("active");
+    });
+    const filtered = allItems.filter(item => {
+        return (item.type === filtertype);
+    });
+
+    setTimeout(() => {
+        renderTopItems(filtered, topchartcontainer);
+    }, 200);
+}
+
+function renderTrendingItems(items, container) {
+
+    let html = "";
 
     items.forEach(item => {
-        html+= `
-        <div class="col-md-3" id="trendingitem${item.id}">
+        const itemId = item._id;
+
+        html += `
+        <div class="col-md-3" id="trendingitem${itemId}">
             <div class="custom-card">
-                <img src="${item.image}" class="card-img">
+                <img src="${item.image || 'https://via.placeholder.com/500'}" class="card-img">
 
                 <span class="badge-type">${item.type.toUpperCase()}</span>
-                <i class="bi ${watchlist.has(item.id) ? "bi-bookmark-check active-bookmark" : "bi-bookmark"
-            } bookmark-icon" onclick="toggleBookmark(${item.id})"></i>
+
+                <i class="bi ${watchlist.has(itemId) ? "bi-bookmark-check active-bookmark" : "bi-bookmark"} 
+                   bookmark-icon" onclick="toggleBookmark('${itemId}')"></i>
 
                 <div class="card-body">
                     <h6>${item.title}</h6>
+
                     <div class="d-flex justify-content-between small text-muted">
                         <span>${item.year}</span>
                         <span>${item.genre}</span>
                     </div>
+
                     <div class="rating">
-    ${generateStars(item.rating)} 
-    <span class="ms-1">${item.rating}</span>
-</div>
-                </div>
-                <div class="view-overlay">
-    <button onclick="viewDetails(${item.id})">
-        <i class="bi bi-play-fill"></i> View Details
-    </button>
-</div>
-            </div>
-        </div>
-        `;
-    });
-    container.innerHTML = html;
-    setTimeout(()=>{
-        container.classList.add("listready");
-    },100)
-    // console.log(container)
-}
-
-function renderTopItem(items) {
-    const container = document.getElementById("topchartlist");
-    // container.classList.remove("listready");
-    if (items.length === 0) {
-        container.innerHTML = `<p class="text-center text-muted mt-4">Error finding top charts</p>`;
-        return;
-    }
-    html = ""
-    container.innerHTML = `<p>Loading top charts</p>`;
-
-    items.forEach(item => {
-        html+= `
-        <div class="col-md-3" id="topitem${item.id}">
-            <div class="custom-card">
-                <img src="${item.image}" class="card-img">
-
-                <span class="badge-type">${item.type.toUpperCase()}</span>
-                <i class="bi ${watchlist.has(item.id) ? "bi-bookmark-check active-bookmark" : "bi-bookmark"
-            } bookmark-icon" onclick="toggleBookmark(${item.id})"></i>
-
-                <div class="card-body">
-                    <h6>${item.title}</h6>
-                    <div class="d-flex justify-content-between small text-muted">
-                        <span>${item.year}</span>
-                        <span>${item.genre}</span>
-                    </div>
-                    <div class="rating">
-    ${generateStars(item.rating)} 
-    <span class="ms-1">${item.rating}</span>
-</div>
-                </div>
-                <div class="view-overlay">
-    <button onclick="viewDetails(${item.id})">
-        <i class="bi bi-play-fill"></i> View Details
-    </button>
-</div>
-            </div>
-        </div>
-        `;
-    });
-    container.innerHTML = html;
-    setTimeout(()=>{
-        container.classList.add("listready");
-    },100)
-    // console.log(container);
-}
-
-function rendersingleItem(cardholder,id){
-    item = allItems.find(it => it.id === id);
-    cardholder.innerHTML = `
-        <div class="custom-card">
-                <img src="${item.image}" class="card-img">
-
-                <span class="badge-type">${item.type.toUpperCase()}</span>
-                <i class="bi ${watchlist.has(id) ? "bi-bookmark-check active-bookmark" : "bi-bookmark"} 
-                bookmark-icon" onclick="toggleBookmark(${id})"></i>
-                <div class="card-body">
-                    <h6>${item.title}</h6>
-                    <div class="d-flex justify-content-between small text-muted">
-                        <span>${item.year}</span>
-                        <span>${item.genre}</span>
-                    </div>
-                    <div class="rating">
-                        ${generateStars(item.rating)} 
-                        <span class="ms-1">${item.rating}</span>
+                        ${generateStars(Number(item.rating))}
+                        <span class="ms-1">${Number(item.rating).toFixed(1)}</span>
                     </div>
                 </div>
+
                 <div class="view-overlay">
-                    <button onclick="viewDetails(${item.id})">
+                    <button onclick="viewDetails('${itemId}')">
                         <i class="bi bi-play-fill"></i> View Details
                     </button>
                 </div>
             </div>
+        </div>
+        `;
+    });
+
+    container.innerHTML = html;
+
+    setTimeout(() => {
+        container.classList.add("listready");
+    }, 100);
+}
+
+function renderTopItems(items, container) {
+
+    let html = "";
+
+    items.forEach(item => {
+        const itemId = item._id;
+
+        html += `
+        <div class="col-md-3" id="topchartitem${itemId}">
+            <div class="custom-card">
+                <img src="${item.image || 'https://via.placeholder.com/500'}" class="card-img">
+
+                <span class="badge-type">${item.type.toUpperCase()}</span>
+
+                <i class="bi ${watchlist.has(itemId) ? "bi-bookmark-check active-bookmark" : "bi-bookmark"} 
+                   bookmark-icon" onclick="toggleBookmark('${itemId}')"></i>
+
+                <div class="card-body">
+                    <h6>${item.title}</h6>
+
+                    <div class="d-flex justify-content-between small text-muted">
+                        <span>${item.year}</span>
+                        <span>${item.genre}</span>
+                    </div>
+
+                    <div class="rating">
+                        ${generateStars(Number(item.rating))}
+                        <span class="ms-1">${Number(item.rating).toFixed(1)}</span>
+                    </div>
+                </div>
+
+                <div class="view-overlay">
+                    <button onclick="viewDetails('${itemId}')">
+                        <i class="bi bi-play-fill"></i> View Details
+                    </button>
+                </div>
+            </div>
+        </div>
+        `;
+    });
+
+    container.innerHTML = html;
+
+    setTimeout(() => {
+        container.classList.add("listready");
+    }, 100);
+}
+
+function rendersingleItem(cardholder, id) {
+    const item = allItems.find(it => it._id === id);
+
+    if (!item) return;
+
+    cardholder.innerHTML = `
+        <div class="custom-card">
+            <img src="${item.image || 'https://via.placeholder.com/500'}" class="card-img">
+
+            <span class="badge-type">${item.type.toUpperCase()}</span>
+
+            <i class="bi ${watchlist.has(id) ? "bi-bookmark-check active-bookmark" : "bi-bookmark"} 
+               bookmark-icon" onclick="toggleBookmark('${id}')"></i>
+
+            <div class="card-body">
+                <h6>${item.title}</h6>
+
+                <div class="d-flex justify-content-between small text-muted">
+                    <span>${item.year}</span>
+                    <span>${item.genre}</span>
+                </div>
+
+                <div class="rating">
+                    ${generateStars(Number(item.rating))}
+                    <span class="ms-1">${Number(item.rating).toFixed(1)}</span>
+                </div>
+            </div>
+
+            <div class="view-overlay">
+                <button onclick="viewDetails('${id}')">
+                    <i class="bi bi-play-fill"></i> View Details
+                </button>
+            </div>
+        </div>
     `;
 }
 
-function toggleBookmark(id) {
-    if (watchlist.has(id)) {
-        watchlist.delete(id);
-    } else {
-        watchlist.add(id);
+async function toggleBookmark(id) {
+    try {
+        const token = getToken();
+
+        if (!token) {
+            alert("Please login first to use watchlist.");
+            window.location.href = "signin.html";
+            return;
+        }
+
+        if (watchlist.has(id)) {
+            const res = await fetch(`${API_BASE_URL}/watchlist/${id}`, {
+                method: "DELETE",
+                headers: authHeaders()
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                alert(data.message || "Failed to remove from watchlist");
+                return;
+            }
+
+            watchlist.delete(id);
+
+        } else {
+            const res = await fetch(`${API_BASE_URL}/watchlist`, {
+                method: "POST",
+                headers: authHeaders(),
+                body: JSON.stringify({ itemId: id })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                alert(data.message || "Failed to add to watchlist");
+                return;
+            }
+
+            watchlist.add(id);
+        }
+
+        const cardholder1 = document.getElementById("trendingitem" + id);
+        const cardholder2 = document.getElementById("topchartitem" + id);
+
+        if (cardholder1) {
+            rendersingleItem(cardholder1, id);
+            if(cardholder2) {
+                rendersingleItem(cardholder2, id);
+            }
+        } else if (cardholder2) {
+            rendersingleItem(cardholder2, id);
+            if(cardholder1) {
+                rendersingleItem(cardholder1, id);
+            }
+        } else {
+            // applyfilter("movie");
+        }
+
+    } catch (err) {
+        console.error("Bookmark error:", err);
+        alert("Error updating watchlist");
     }
-    bookmarkholder1 = document.querySelector(`#trendingitem${id}`);
-    bookmarkholder2 = document.querySelector(`#topitem${id}`);    
-    rendersingleItem(bookmarkholder1,id);
-    rendersingleItem(bookmarkholder2,id);
 }
 
 function generateStars(rating) {
     let stars = "";
+
     for (let i = 1; i <= 5; i++) {
         if (i <= Math.floor(rating)) {
             stars += '<i class="bi bi-star-fill filled"></i>';
@@ -208,6 +339,7 @@ function generateStars(rating) {
             stars += '<i class="bi bi-star"></i>';
         }
     }
+
     return stars;
 }
 
@@ -215,5 +347,3 @@ function viewDetails(id) {
     localStorage.setItem("id", id);
     window.location.href = "review.html";
 }
-
-applyfilter("movie");
