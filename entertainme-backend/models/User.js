@@ -21,7 +21,10 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true
-    }
+    },
+    resetOTP: String,
+
+    otpExpire: Date,
   },
   { versionKey: false },
   { timestamps: true }
