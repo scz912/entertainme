@@ -274,7 +274,7 @@ async function toggleBookmark(id) {
 
         if (!token) {
             alert("Please login first to use watchlist.");
-            window.location.href = "login.html";
+            window.location.href = "signin.html";
             return;
         }
 
