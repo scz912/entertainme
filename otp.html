@@ -47,10 +47,10 @@
                 <input type="text" maxlength="1" class="otp-box text-center">
             </div>
             
-            <button type="submit" class="btn-auth w-100 mt-4">Verify Code</button>
+            <button type="button" onclick="verifyOTP()" class="btn-auth w-100 mt-4">Verify Code</button>
             <div style="text-align: center; margin: 15px 0; opacity: 0.5; font-size: 12px; line-height: 1.5;">
                 Didn't receive the code?
-                <a href="#" id="resendBtn" class="direct-link">Resend</a>
+                <a href="#" id="resendBtn" class="direct-link" onclick="event.preventDefault(); resendOTP();">Resend</a>
             </div>
         </div>
         </div>
@@ -76,5 +76,7 @@
                 });
             });
         </script>
+        <script src="js/api.js"></script>
+        <script src="js/auth.js"></script>
     </body>
 </html>
