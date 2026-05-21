@@ -2,14 +2,26 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dns = require("dns");
+const session = require("express-session");
 require("dotenv").config();
 
+const passport = require("./config/passport");
 dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.use(
+  session({
+    secret: process.env.JWT_SECRET,
+    resave: false,
+    saveUninitialized: false
+  })
+);
+
+app.use(passport.initialize());
 
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));

@@ -43,10 +43,10 @@
                 <p class="text-white-50" style="opacity: 0.8;">Join us to explore entertainment</p>
             </div>
             <form>
-                <div class="text-start mb-1 small opacity-50">Full Name</div>
+                <div class="text-start mb-1 small opacity-50">Username</div>
                 <div class="input-group-custom">
                     <i class="bi bi-person"></i>
-                    <input type="text" id="nameInput" placeholder="Your Name">
+                    <input type="text" id="nameInput" placeholder="Username">
                 </div>
                 <div class="text-start mb-1 small opacity-50">Email</div>
                 <div class="input-group-custom">
@@ -67,11 +67,12 @@
                         style="color: white; opacity: 0.5; cursor: pointer;"></i>
                 </div>
             </form>
-            <button type="submit" onclick="register()" class="btn-auth w-100 mt-4"
-                onclick="window.location.href = 'home.html'">Create Account</button><br>
+            <button type="button" onclick="register()" class="btn-auth w-100 mt-4">
+                Create Account
+            </button><br>
             <div style="text-align: center;">
                 <p class="text-white-50" style="opacity: 0.8;">or sign up with</p>
-                <a href="https://accounts.google.com/signin" class="btn-google w-100">
+                <a href="http://localhost:5001/api/auth/google" class="btn-google w-100">
                     <i class="bi bi-google me-2"></i>Google</a>
                 <span style="opacity:0.6; font-size:14px;">Already have an account?</span>
                 <a href="signin.html" class="direct-link">Sign In</a>
@@ -104,6 +105,21 @@
     </script>
     <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
+    <script>
+  const params = new URLSearchParams(window.location.search);
+  const googleSignupToken = params.get("googleSignupToken");
+
+  if (googleSignupToken) {
+    localStorage.setItem("googleSignupToken", googleSignupToken);
+
+    const tokenPayload = JSON.parse(
+      atob(googleSignupToken.split(".")[1])
+    );
+
+    document.getElementById("emailInput").value = tokenPayload.email;
+    document.getElementById("emailInput").disabled = true;
+  }
+</script>
 </body>
 
 </html>
