@@ -73,7 +73,7 @@ function renderWatchlist(filterType = "all") {
 
     container.innerHTML = items.map(item => {
         const image = item.image || item.poster || item.coverImage || "img/homebannerbg.jpg";
-        const rating = item.rating || 0;
+        const rating = Number(item.rating) || 0;
 
         return `
             <div class="col-md-3">
@@ -95,7 +95,7 @@ function renderWatchlist(filterType = "all") {
 
                         <div class="rating">
                             ${generateStars(rating)}
-                            <span class="ms-1">${rating}</span>
+                            <span class="ms-1">${rating.toFixed(1)}</span>
                         </div>
                     </div>
 

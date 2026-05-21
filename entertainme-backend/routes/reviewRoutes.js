@@ -27,7 +27,7 @@ router.post("/", authMiddleware, async (req, res) => {
     const reviews = await Review.find({ itemId });
 
     const total = reviews.reduce((sum, r) => sum + r.rating, 0);
-    const avgRating = total / reviews.length;
+    const avgRating = Math.round((total / reviews.length) * 10) / 10;
 
     // Update item
     await Item.findByIdAndUpdate(itemId, {
