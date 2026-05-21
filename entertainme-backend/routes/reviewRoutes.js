@@ -23,6 +23,7 @@ router.post("/", authMiddleware, async (req, res) => {
       comment
     });
 
+
     // Recalculate rating
     const reviews = await Review.find({ itemId });
 
