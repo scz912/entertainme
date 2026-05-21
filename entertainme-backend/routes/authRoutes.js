@@ -3,18 +3,50 @@ const transporter = require("../mailer");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const passport = require("passport");
 
 const router = express.Router();
 
 // REGISTER
 router.post("/register", async (req, res) => {
   try {
-    const { name, email, phone, password } = req.body;
+    const { name, email, phone, password, googleSignupToken } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        message: "Name, email and password are required"
+      });
+    }
+
+    let googleId = null;
+
+    if (googleSignupToken) {
+      const decoded = jwt.verify(
+        googleSignupToken,
+        process.env.JWT_SECRET
+      );
+
+      if (decoded.purpose !== "google-signup") {
+        return res.status(400).json({
+          message: "Invalid Google signup token"
+        });
+      }
+
+      if (decoded.email !== email) {
+        return res.status(400).json({
+          message: "Google email does not match"
+        });
+      }
+
+      googleId = decoded.googleId;
+    }
 
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      return res.status(400).json({ message: "Email already registered" });
+      return res.status(400).json({
+        message: "Email already registered"
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -23,15 +55,19 @@ router.post("/register", async (req, res) => {
       name,
       email,
       phone,
-      password: hashedPassword
+      password: hashedPassword,
+      googleId
     });
 
     res.status(201).json({
       message: "User registered successfully",
       userId: user._id
     });
+
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({
+      message: err.message
+    });
   }
 });
 
@@ -219,5 +255,66 @@ router.post("/reset-password", async (req, res) => {
   }
 
 });
+
+// GOOGLE LOGIN
+router.get(
+  "/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    session: false
+  })
+);
+
+// GOOGLE CALLBACK
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: `${process.env.FRONTEND_URL}/signin.html`,
+    session: false
+  }),
+
+  (req, res) => {
+    // New Google user: redirect to signup page
+    if (req.user.isNewGoogleUser) {
+      const googleSignupToken = jwt.sign(
+        {
+          email: req.user.email,
+          googleId: req.user.googleId,
+          name: req.user.name,
+          purpose: "google-signup"
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "10m" }
+      );
+
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/signup.html?googleSignupToken=${googleSignupToken}`
+      );
+    }
+
+    // Existing user: login directly
+    const token = jwt.sign(
+      {
+        id: req.user._id,
+        email: req.user.email
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    const userData = encodeURIComponent(
+      JSON.stringify({
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+        phone: req.user.phone || ""
+      })
+    );
+
+    res.redirect(
+      `${process.env.FRONTEND_URL}/googleCallback.html?token=${token}&user=${userData}`
+    );
+  }
+);
 
 module.exports = router;

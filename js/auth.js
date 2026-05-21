@@ -28,6 +28,7 @@ async function register() {
   const email = document.getElementById("emailInput").value;
   const password = document.getElementById("passwordInput").value;
   const confirmPassword = document.getElementById("confirmPasswordInput").value;
+  const googleSignupToken = localStorage.getItem("googleSignupToken");
 
   // simple validation
   if (!name || !email || !password || !confirmPassword) {
@@ -49,7 +50,8 @@ async function register() {
       body: JSON.stringify({
         name,
         email,
-        password
+        password,
+        googleSignupToken
       })
     });
 
@@ -59,6 +61,7 @@ async function register() {
       alert(data.message);
       return;
     }
+    localStorage.removeItem("googleSignupToken");
 
     alert("Account created successfully!");
 

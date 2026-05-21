@@ -22,12 +22,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    googleId: String,
     resetOTP: String,
-
     otpExpire: Date,
   },
-  { versionKey: false },
-  { timestamps: true }
+{
+  versionKey: false,
+  timestamps: true
+}
 );
 
 module.exports = mongoose.model("User", userSchema);
