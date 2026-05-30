@@ -28,8 +28,13 @@ async function loadProfile() {
         const data = await res.json();
 
         if (!res.ok) {
+<<<<<<< HEAD
             showToast(data.message || "Unable to load profile.", "error");
             setTimeout(() => logout(), 1500);
+=======
+            alert(data.message || "Unable to load profile.");
+            logout();
+>>>>>>> 3def0189ab452073688d0738466ff1be5492494d
             return;
         }
 
@@ -41,7 +46,11 @@ async function loadProfile() {
         setInputValue("phone", user.phone);
     } catch (err) {
         console.error(err);
+<<<<<<< HEAD
         showToast("Unable to connect to the backend. Please make sure the server is running.", "error");
+=======
+        alert("Unable to connect to the backend. Please make sure the server is running.");
+>>>>>>> 3def0189ab452073688d0738466ff1be5492494d
     }
 }
 
@@ -63,7 +72,11 @@ async function saveProfile() {
     const phone = document.getElementById("phone").value.trim();
 
     if (!name) {
+<<<<<<< HEAD
         showToast("Name cannot be empty.", "warning");
+=======
+        alert("Name cannot be empty.");
+>>>>>>> 3def0189ab452073688d0738466ff1be5492494d
         return;
     }
 
@@ -77,17 +90,29 @@ async function saveProfile() {
         const data = await res.json();
 
         if (!res.ok) {
+<<<<<<< HEAD
             showToast(data.message || "Unable to update profile.", "error");
+=======
+            alert(data.message || "Unable to update profile.");
+>>>>>>> 3def0189ab452073688d0738466ff1be5492494d
             return;
         }
 
         user = data.user;
         localStorage.setItem("user", JSON.stringify(user));
+<<<<<<< HEAD
         showToast("Profile updated successfully!", "success", 1500);
         setTimeout(() => { window.location.href = "profile.html"; }, 1300);
     } catch (err) {
         console.error(err);
         showToast("Unable to connect to the backend. Please make sure the server is running.", "error");
+=======
+        alert("Profile updated successfully!");
+        window.location.href = "profile.html";
+    } catch (err) {
+        console.error(err);
+        alert("Unable to connect to the backend. Please make sure the server is running.");
+>>>>>>> 3def0189ab452073688d0738466ff1be5492494d
     }
 }
 
@@ -97,17 +122,29 @@ async function changePassword() {
     const confirmPass = document.getElementById("confirmPassword").value;
 
     if (!oldPass || !newPass || !confirmPass) {
+<<<<<<< HEAD
         showToast("Please fill in all password fields.", "warning");
+=======
+        alert("Please fill in all password fields.");
+>>>>>>> 3def0189ab452073688d0738466ff1be5492494d
         return;
     }
 
     if (newPass.length < 8) {
+<<<<<<< HEAD
         showToast("Password must be at least 8 characters!", "warning");
+=======
+        alert("Password must be at least 8 characters!");
+>>>>>>> 3def0189ab452073688d0738466ff1be5492494d
         return;
     }
 
     if (newPass !== confirmPass) {
+<<<<<<< HEAD
         showToast("New password and confirm password do not match!", "error");
+=======
+        alert("New password and confirm password do not match!");
+>>>>>>> 3def0189ab452073688d0738466ff1be5492494d
         return;
     }
 
@@ -124,17 +161,29 @@ async function changePassword() {
         const data = await res.json();
 
         if (!res.ok) {
+<<<<<<< HEAD
             showToast(data.message || "Unable to change password.", "error");
             return;
         }
 
         showToast("Password updated successfully!", "success");
+=======
+            alert(data.message || "Unable to change password.");
+            return;
+        }
+
+        alert("Password updated successfully!");
+>>>>>>> 3def0189ab452073688d0738466ff1be5492494d
         document.getElementById("oldPassword").value = "";
         document.getElementById("newPassword").value = "";
         document.getElementById("confirmPassword").value = "";
     } catch (err) {
         console.error(err);
+<<<<<<< HEAD
         showToast("Unable to connect to the backend. Please make sure the server is running.", "error");
+=======
+        alert("Unable to connect to the backend. Please make sure the server is running.");
+>>>>>>> 3def0189ab452073688d0738466ff1be5492494d
     }
 }
 
@@ -181,6 +230,7 @@ async function confirmDeleteAccount() {
         const data = await res.json();
 
         if (!res.ok) {
+<<<<<<< HEAD
             showToast(data.message || "Unable to delete account.", "error");
             return;
         }
@@ -191,6 +241,17 @@ async function confirmDeleteAccount() {
     } catch (err) {
         console.error(err);
         showToast("Unable to connect to the backend. Please make sure the server is running.", "error");
+=======
+            alert(data.message || "Unable to delete account.");
+            return;
+        }
+
+        alert(data.message);
+        logout();
+    } catch (err) {
+        console.error(err);
+        alert("Unable to connect to the backend. Please make sure the server is running.");
+>>>>>>> 3def0189ab452073688d0738466ff1be5492494d
     }
 }
 
