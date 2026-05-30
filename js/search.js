@@ -30,7 +30,7 @@ async function loadItemsFromAPI() {
         const data = await res.json();
 
         if (!res.ok) {
-            alert(data.message || "Failed to load items");
+            showToast(data.message || "Failed to load items", "error");
             return;
         }
 
@@ -273,8 +273,8 @@ async function toggleBookmark(id) {
         const token = getToken();
 
         if (!token) {
-            alert("Please login first to use watchlist.");
-            window.location.href = "signin.html";
+            showToast("Please login first to use watchlist.", "warning", 1500);
+            setTimeout(() => { window.location.href = "signin.html"; }, 1300);
             return;
         }
 
@@ -287,11 +287,12 @@ async function toggleBookmark(id) {
             const data = await res.json();
 
             if (!res.ok) {
-                alert(data.message || "Failed to remove from watchlist");
+                showToast(data.message || "Failed to remove from watchlist", "error");
                 return;
             }
 
             watchlist.delete(id);
+            showToast("Removed from watchlist", "info", 1800);
 
         } else {
             const res = await fetch(`${API_BASE_URL}/watchlist`, {
@@ -303,11 +304,12 @@ async function toggleBookmark(id) {
             const data = await res.json();
 
             if (!res.ok) {
-                alert(data.message || "Failed to add to watchlist");
+                showToast(data.message || "Failed to add to watchlist", "error");
                 return;
             }
 
             watchlist.add(id);
+            showToast("Added to watchlist", "success", 1800);
         }
 
         const cardholder = document.getElementById("trendingitem" + id);
@@ -320,7 +322,7 @@ async function toggleBookmark(id) {
 
     } catch (err) {
         console.error("Bookmark error:", err);
-        alert("Error updating watchlist");
+        showToast("Error updating watchlist", "error");
     }
 }
 

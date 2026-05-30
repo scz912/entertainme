@@ -6,7 +6,7 @@ let currentItemId = null;
 document.addEventListener('DOMContentLoaded', async () => {
     currentItemId = localStorage.getItem("id");
     if (!currentItemId) {
-        alert("No item selected.");
+        showToast("No item selected.", "warning");
         return;
     }
     await loadItemDetails(currentItemId);
@@ -22,13 +22,13 @@ async function loadItemDetails(itemId) {
         const res = await fetch(`${API_BASE_URL}/items/${itemId}`);
         const data = await res.json();
         if (!res.ok) {
-            alert(data.message || "Unable to load item details.");
+            showToast(data.message || "Unable to load item details.", "error");
             return;
         }
         renderItemDetails(data);
     } catch (err) {
         console.error(err);
-        alert("Unable to connect to the backend. Please make sure the server is running.");
+        showToast("Unable to connect to the backend. Please make sure the server is running.", "error");
     }
 }
 
@@ -109,7 +109,7 @@ async function loadReviews(itemId) {
 
     } catch (err) {
         console.error(err);
-        alert("Unable to load reviews. Please check the review data format.");
+        showToast("Unable to load reviews. Please check the review data format.", "error");
     }
 }
 // RENDER REVIEWS ON PAGE
@@ -223,21 +223,21 @@ function setupFormSubmission() {
         e.preventDefault();
 
         if (selectedRating == 0) {
-            alert('Please select a rating before submitting.');
+            showToast("Please select a rating before submitting.", "warning");
             return;
         }
 
         const comment = document.getElementById("review-text").value;
 
         if (comment.trim() === "") {
-            alert("Please write a review before submitting.");
+            showToast("Please write a review before submitting.", "warning");
             return;
         }
         const token = localStorage.getItem("token");
 
         if (!token) {
-            alert("Please login before submitting a review.");
-            window.location.href = "signin.html";
+            showToast("Please login before submitting a review.", "warning", 1500);
+            setTimeout(() => { window.location.href = "signin.html"; }, 1300);
             return;
         }
 
@@ -258,11 +258,11 @@ function setupFormSubmission() {
             const data = await res.json();
 
             if (!res.ok) {
-                alert(data.message || "Failed to submit review.");
+                showToast(data.message || "Failed to submit review.", "error");
                 return;
             }
 
-            alert("Review added successfully!");
+            showToast("Review added successfully!", "success");
 
             resetReviewForm();
 
@@ -274,7 +274,7 @@ function setupFormSubmission() {
 
         } catch (error) {
             console.error("Error submitting review:", error);
-            alert("Something went wrong while submitting review.");
+            showToast("Something went wrong while submitting review.", "error");
         }
     });
 }

@@ -12,8 +12,8 @@ async function loadWatchlist() {
     const token = getToken();
 
     if (!token) {
-        alert("Please login first");
-        window.location.href = "signin.html";
+        showToast("Please login first", "warning", 1500);
+        setTimeout(() => { window.location.href = "signin.html"; }, 1300);
         return;
     }
 
@@ -26,7 +26,7 @@ async function loadWatchlist() {
         const data = await res.json();
 
         if (!res.ok) {
-            alert(data.message || "Failed to load watchlist");
+            showToast(data.message || "Failed to load watchlist", "error");
             return;
         }
 
@@ -39,7 +39,7 @@ async function loadWatchlist() {
 
     } catch (error) {
         console.error("Error loading watchlist:", error);
-        alert("Cannot connect to backend");
+        showToast("Cannot connect to backend", "error");
     }
 }
 
@@ -124,18 +124,18 @@ async function removeFromWatchlist(itemId) {
         const data = await res.json();
 
         if (!res.ok) {
-            alert(data.message || "Failed to remove item");
+            showToast(data.message || "Failed to remove item", "error");
             return;
         }
 
-        alert(data.message || "Removed from watchlist");
+        showToast(data.message || "Removed from watchlist", "info", 1800);
 
         // Reload latest data from MongoDB
         loadWatchlist();
 
     } catch (error) {
         console.error("Error removing from watchlist:", error);
-        alert("Cannot connect to backend");
+        showToast("Cannot connect to backend", "error");
     }
 }
 

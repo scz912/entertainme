@@ -2,25 +2,36 @@ async function login() {
   const email = document.getElementById("emailInput").value;
   const password = document.getElementById("passwordInput").value;
 
-  const res = await fetch(`${API_BASE_URL}/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ email, password })
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    alert(data.message);
+  if (!email || !password) {
+    showToast("Please enter your email and password", "warning");
     return;
   }
 
-  localStorage.setItem("token", data.token);
-  localStorage.setItem("user", JSON.stringify(data.user));
+  try {
+    const res = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
 
-  window.location.href = "home.html";
+    const data = await res.json();
+
+    if (!res.ok) {
+      showToast(data.message || "Login failed", "error");
+      return;
+    }
+
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    showToast("Welcome back!", "success", 1200);
+    setTimeout(() => { window.location.href = "home.html"; }, 900);
+  } catch (err) {
+    console.error(err);
+    showToast("Unable to connect to the server", "error");
+  }
 }
 
 async function register() {
@@ -32,12 +43,12 @@ async function register() {
 
   // simple validation
   if (!name || !email || !password || !confirmPassword) {
-    alert("Please fill all fields");
+    showToast("Please fill in all fields", "warning");
     return;
   }
 
   if (password !== confirmPassword) {
-    alert("Passwords do not match");
+    showToast("Passwords do not match", "error");
     return;
   }
 
@@ -58,19 +69,17 @@ async function register() {
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.message);
+      showToast(data.message || "Registration failed", "error");
       return;
     }
     localStorage.removeItem("googleSignupToken");
 
-    alert("Account created successfully!");
-
-    // redirect to login
-    window.location.href = "signin.html";
+    showToast("Account created successfully! Redirecting to sign in...", "success", 1500);
+    setTimeout(() => { window.location.href = "signin.html"; }, 1400);
 
   } catch (err) {
     console.error(err);
-    alert("Something went wrong");
+    showToast("Something went wrong. Please try again.", "error");
   }
 }
 
@@ -84,7 +93,7 @@ async function forgotPassword() {
   const email = document.getElementById("emailInput").value;
 
   if (!email) {
-    alert("Please enter your email");
+    showToast("Please enter your email", "warning");
     return;
   }
 
@@ -100,16 +109,16 @@ async function forgotPassword() {
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.message);
+      showToast(data.message || "Failed to send OTP", "error");
       return;
     }
     // Save email temporarily
     localStorage.setItem("resetEmail", email);
-    alert("OTP sent to your email");
-    window.location.href = "otp.html";
+    showToast("OTP sent to your email", "success", 1500);
+    setTimeout(() => { window.location.href = "otp.html"; }, 1300);
   } catch (err) {
     console.error(err);
-    alert("Something went wrong");
+    showToast("Something went wrong. Please try again.", "error");
   }
 }
 
@@ -123,7 +132,7 @@ async function verifyOTP() {
 
   const email = localStorage.getItem("resetEmail");
   if (otp.length !== 6) {
-    alert("Please enter complete OTP");
+    showToast("Please enter the complete 6-digit OTP", "warning");
     return;
   }
 
@@ -143,16 +152,16 @@ async function verifyOTP() {
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.message);
+      showToast(data.message || "OTP verification failed", "error");
       return;
 
     }
-    alert("OTP verified");
-    window.location.href = "changePassword.html";
+    showToast("OTP verified successfully", "success", 1500);
+    setTimeout(() => { window.location.href = "changePassword.html"; }, 1300);
 
   } catch (err) {
     console.error(err);
-    alert("Something went wrong");
+    showToast("Something went wrong. Please try again.", "error");
   }
 }
 async function resetPassword() {
@@ -161,23 +170,23 @@ async function resetPassword() {
   const email = localStorage.getItem("resetEmail");
 
   if (!email) {
-    alert("Reset email not found. Please start from Forgot Password again.");
-    window.location.href = "emailVerification.html";
+    showToast("Reset session expired. Please start from Forgot Password again.", "error");
+    setTimeout(() => { window.location.href = "emailVerification.html"; }, 1800);
     return;
   }
 
   if (!newPassword || !confirmPassword) {
-    alert("Please fill all fields");
+    showToast("Please fill in all fields", "warning");
     return;
   }
 
   if (newPassword.length < 8) {
-    alert("Password must be at least 8 characters long");
+    showToast("Password must be at least 8 characters long", "warning");
     return;
   }
 
   if (newPassword !== confirmPassword) {
-    alert("Passwords do not match");
+    showToast("Passwords do not match", "error");
     return;
   }
 
@@ -196,18 +205,18 @@ async function resetPassword() {
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.message);
+      showToast(data.message || "Failed to reset password", "error");
       return;
     }
 
     localStorage.removeItem("resetEmail");
 
-    alert("Password reset successful");
-    window.location.href = "signin.html";
+    showToast("Password reset successful! Redirecting to sign in...", "success", 1500);
+    setTimeout(() => { window.location.href = "signin.html"; }, 1400);
 
   } catch (err) {
     console.error(err);
-    alert("Something went wrong");
+    showToast("Something went wrong. Please try again.", "error");
   }
 }
 
@@ -215,8 +224,8 @@ async function resendOTP() {
   const email = localStorage.getItem("resetEmail");
 
   if (!email) {
-    alert("Email not found. Please start again.");
-    window.location.href = "emailVerification.html";
+    showToast("Email not found. Please start again.", "error");
+    setTimeout(() => { window.location.href = "emailVerification.html"; }, 1800);
     return;
   }
 
@@ -232,7 +241,7 @@ async function resendOTP() {
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.message);
+      showToast(data.message || "Failed to resend OTP", "error");
       return;
     }
 
@@ -243,10 +252,10 @@ async function resendOTP() {
 
     document.querySelector(".otp-box").focus();
 
-    alert("A new OTP has been sent to your email");
+    showToast("A new OTP has been sent to your email", "success");
 
   } catch (err) {
     console.error(err);
-    alert("Something went wrong");
+    showToast("Something went wrong. Please try again.", "error");
   }
 }

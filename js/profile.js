@@ -28,8 +28,8 @@ async function loadProfile() {
         const data = await res.json();
 
         if (!res.ok) {
-            alert(data.message || "Unable to load profile.");
-            logout();
+            showToast(data.message || "Unable to load profile.", "error");
+            setTimeout(() => logout(), 1500);
             return;
         }
 
@@ -41,7 +41,7 @@ async function loadProfile() {
         setInputValue("phone", user.phone);
     } catch (err) {
         console.error(err);
-        alert("Unable to connect to the backend. Please make sure the server is running.");
+        showToast("Unable to connect to the backend. Please make sure the server is running.", "error");
     }
 }
 
@@ -63,7 +63,7 @@ async function saveProfile() {
     const phone = document.getElementById("phone").value.trim();
 
     if (!name) {
-        alert("Name cannot be empty.");
+        showToast("Name cannot be empty.", "warning");
         return;
     }
 
@@ -77,17 +77,17 @@ async function saveProfile() {
         const data = await res.json();
 
         if (!res.ok) {
-            alert(data.message || "Unable to update profile.");
+            showToast(data.message || "Unable to update profile.", "error");
             return;
         }
 
         user = data.user;
         localStorage.setItem("user", JSON.stringify(user));
-        alert("Profile updated successfully!");
-        window.location.href = "profile.html";
+        showToast("Profile updated successfully!", "success", 1500);
+        setTimeout(() => { window.location.href = "profile.html"; }, 1300);
     } catch (err) {
         console.error(err);
-        alert("Unable to connect to the backend. Please make sure the server is running.");
+        showToast("Unable to connect to the backend. Please make sure the server is running.", "error");
     }
 }
 
@@ -97,17 +97,17 @@ async function changePassword() {
     const confirmPass = document.getElementById("confirmPassword").value;
 
     if (!oldPass || !newPass || !confirmPass) {
-        alert("Please fill in all password fields.");
+        showToast("Please fill in all password fields.", "warning");
         return;
     }
 
     if (newPass.length < 8) {
-        alert("Password must be at least 8 characters!");
+        showToast("Password must be at least 8 characters!", "warning");
         return;
     }
 
     if (newPass !== confirmPass) {
-        alert("New password and confirm password do not match!");
+        showToast("New password and confirm password do not match!", "error");
         return;
     }
 
@@ -124,17 +124,17 @@ async function changePassword() {
         const data = await res.json();
 
         if (!res.ok) {
-            alert(data.message || "Unable to change password.");
+            showToast(data.message || "Unable to change password.", "error");
             return;
         }
 
-        alert("Password updated successfully!");
+        showToast("Password updated successfully!", "success");
         document.getElementById("oldPassword").value = "";
         document.getElementById("newPassword").value = "";
         document.getElementById("confirmPassword").value = "";
     } catch (err) {
         console.error(err);
-        alert("Unable to connect to the backend. Please make sure the server is running.");
+        showToast("Unable to connect to the backend. Please make sure the server is running.", "error");
     }
 }
 
@@ -181,15 +181,16 @@ async function confirmDeleteAccount() {
         const data = await res.json();
 
         if (!res.ok) {
-            alert(data.message || "Unable to delete account.");
+            showToast(data.message || "Unable to delete account.", "error");
             return;
         }
 
-        alert(data.message);
-        logout();
+        closeDeleteModal();
+        showToast(data.message || "Account deleted", "success", 1500);
+        setTimeout(() => logout(), 1300);
     } catch (err) {
         console.error(err);
-        alert("Unable to connect to the backend. Please make sure the server is running.");
+        showToast("Unable to connect to the backend. Please make sure the server is running.", "error");
     }
 }
 

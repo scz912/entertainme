@@ -71,11 +71,13 @@ ENTERTAINME/
 │   ├── profile.js
 │   ├── review.js
 │   ├── search.js
+│   ├── toast.js
 │   └── watchlist.js
 │
 ├── changePassword.html
 ├── editProfile.html
 ├── emailVerification.html
+├── googleCallback.html
 ├── home.html
 ├── signin.html
 ├── otp.html
@@ -105,6 +107,7 @@ ENTERTAINME/
 | `emailVerification.html` | Email verification page for password reset |
 | `otp.html` | OTP verification page |
 | `review.html` | Displays item details and allows user to submit reviews |
+| `googleCallback.html` | Handles Google OAuth login redirect |
 | `css/style.css` | Main styling file for all pages |
 | `img/homebannerbg.jpg` | Homepage banner background image |
 
@@ -121,6 +124,7 @@ ENTERTAINME/
 | `js/review.js` | Handles review page, rating input, and review API integration |
 | `js/watchlist.js` | Handles add, remove, and display watchlist using API |
 | `js/profile.js` | Handles profile API integration such as view profile and update profile |
+| `js/toast.js` | Reusable toast notification + confirm dialog system (replaces native `alert`) |
 
 ---
 
@@ -550,7 +554,7 @@ async function login() {
   const data = await res.json();
 
   if (!res.ok) {
-    alert(data.message);
+    showToast(data.message || "Login failed", "error");
     return;
   }
 
@@ -558,7 +562,8 @@ async function login() {
   localStorage.setItem("token", data.token);
   localStorage.setItem("user", JSON.stringify(data.user));
 
-  window.location.href = "home.html";
+  showToast("Welcome back!", "success", 1200);
+  setTimeout(() => { window.location.href = "home.html"; }, 900);
 }
 ```
 
@@ -628,11 +633,11 @@ async function submitReview(itemId) {
   const data = await res.json();
 
   if (!res.ok) {
-    alert(data.message);
+    showToast(data.message || "Failed to submit review", "error");
     return;
   }
 
-  alert("Review added!");
+  showToast("Review added!", "success");
 }
 ```
 
@@ -664,11 +669,11 @@ async function addToWatchlist(itemId) {
   const data = await res.json();
 
   if (!res.ok) {
-    alert(data.message);
+    showToast(data.message || "Failed to add to watchlist", "error");
     return;
   }
 
-  alert("Added to watchlist");
+  showToast("Added to watchlist", "success");
 }
 ```
 
@@ -703,7 +708,7 @@ async function removeFromWatchlist(itemId) {
 
   const data = await res.json();
 
-  alert(data.message);
+  showToast(data.message || "Removed from watchlist", "info");
 }
 ```
 
@@ -721,14 +726,90 @@ function logout() {
 
 ---
 
+## 🔔 Notification System (`js/toast.js`)
+
+All user-facing feedback uses **toast notifications** instead of the default `alert()`. Toasts slide in from the top-right, match the dark purple gradient theme, and auto-dismiss after a few seconds.
+
+### Basic usage
+
+```js
+showToast("Welcome back!", "success");
+showToast("Invalid email or password", "error");
+showToast("Please fill in all fields", "warning");
+showToast("Added to watchlist", "info");
+```
+
+### Signature
+
+```js
+showToast(message, type, duration);
+```
+
+| Argument | Type | Default | Notes |
+|---|---|---|---|
+| `message` | string | required | Text shown in the toast |
+| `type` | `"success"` \| `"error"` \| `"warning"` \| `"info"` | `"info"` | Controls icon + accent colour |
+| `duration` | number (ms) | `3000` | Pass `0` for a sticky toast (user must close it) |
+
+Shortcut helpers are also available:
+
+```js
+toastSuccess("Profile updated!");
+toastError("Network error");
+toastWarning("Password too short");
+toastInfo("Removed from watchlist");
+```
+
+### Toast + redirect pattern
+
+Toasts are **non-blocking**, so a `window.location.href = ...` right after `showToast()` will navigate before the user can read it. Wrap the redirect in a small `setTimeout`:
+
+```js
+showToast("OTP verified successfully", "success", 1500);
+setTimeout(() => {
+  window.location.href = "changePassword.html";
+}, 1300);
+```
+
+### Confirm dialog (for destructive actions)
+
+`showConfirm()` returns a Promise that resolves to `true` or `false`:
+
+```js
+const ok = await showConfirm("Delete this account permanently?", {
+  okText: "Delete",
+  cancelText: "Cancel",
+  type: "error",
+  title: "Delete Account"
+});
+
+if (ok) {
+  // proceed
+}
+```
+
+### Replacement rules
+
+| Old | New |
+|---|---|
+| `alert("Bad input");` | `showToast("Bad input", "warning");` |
+| `alert(data.message);` (after a failed `fetch`) | `showToast(data.message \|\| "Action failed", "error");` |
+| `alert("Saved!");` | `showToast("Saved!", "success");` |
+| `confirm("Are you sure?")` | `await showConfirm("Are you sure?", { type: "warning" })` |
+
+⚠️ Remember to add `<script src="js/toast.js"></script>` **before** any script that calls `showToast()`.
+
+---
+
 ## ⚠️ Important Notes for Frontend Integration
 
 ### 📌 1. Script Loading Order (VERY IMPORTANT)
 
-Always include `api.js` **BEFORE** any other JavaScript file.
+Always include `toast.js` and `api.js` **BEFORE** any other JavaScript file.
 
 ✅ Correct:
 ```html
+<script src="js/toast.js"></script>
 <script src="js/api.js"></script>
 <script src="js/search.js"></script>
 ```
@@ -746,9 +827,12 @@ Because `api.js` contains:
 const API_BASE_URL = "http://localhost:5000/api";
 ```
 
-If you load other JS files first, you will get error:
+And `toast.js` exposes `showToast()` which all other modules call.
+
+If you load other JS files first, you will get errors like:
 ```
 API_BASE_URL is not defined
+showToast is not defined
 ```
 
 ---
