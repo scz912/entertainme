@@ -12,10 +12,6 @@ async function loadWatchlist() {
     const token = getToken();
 
     if (!token) {
-<<<<<<< HEAD
-        showToast("Please login first", "warning", 1500);
-        setTimeout(() => { window.location.href = "signin.html"; }, 1300);
-=======
         document.getElementById("watchlist-count").style.display = "none";
         document.querySelector(".WL-FilterSlider").style.display = "none";
         document.getElementById("watchlist-container").innerHTML = `
@@ -23,7 +19,6 @@ async function loadWatchlist() {
                 <p class="text-muted fs-5">Login to see your watchlist</p>
             </div>
         `;
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
         return;
     }
 
@@ -36,15 +31,11 @@ async function loadWatchlist() {
         const data = await res.json();
 
         if (!res.ok) {
-<<<<<<< HEAD
             showToast(data.message || "Failed to load watchlist", "error");
-=======
-            alert(data.message || "Failed to load watchlist");
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
             return;
         }
 
-        
+
         watchlistItems = data
             .map(w => w.itemId)
             .filter(item => item !== null && item !== undefined);
@@ -53,11 +44,7 @@ async function loadWatchlist() {
 
     } catch (error) {
         console.error("Error loading watchlist:", error);
-<<<<<<< HEAD
         showToast("Cannot connect to backend", "error");
-=======
-        alert("Cannot connect to backend");
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
     }
 }
 
@@ -142,30 +129,18 @@ async function removeFromWatchlist(itemId) {
         const data = await res.json();
 
         if (!res.ok) {
-<<<<<<< HEAD
             showToast(data.message || "Failed to remove item", "error");
             return;
         }
 
         showToast(data.message || "Removed from watchlist", "info", 1800);
-=======
-            alert(data.message || "Failed to remove item");
-            return;
-        }
-
-        showToast("Removed from watchlist");
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
 
         // Reload latest data from MongoDB
         loadWatchlist();
 
     } catch (error) {
         console.error("Error removing from watchlist:", error);
-<<<<<<< HEAD
         showToast("Cannot connect to backend", "error");
-=======
-        alert("Cannot connect to backend");
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
     }
 }
 
@@ -235,15 +210,4 @@ function generateStars(rating) {
 function viewDetails(id) {
     localStorage.setItem("id", id);
     window.location.href = `review.html?id=${id}`;
-<<<<<<< HEAD
-=======
-}
-
-// TOAST NOTIFICATION
-function showToast(message) {
-    const toast = document.getElementById("wl-toast");
-    toast.querySelector(".wl-toast-msg").textContent = message;
-    toast.classList.add("show");
-    setTimeout(() => toast.classList.remove("show"), 3000);
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
 }

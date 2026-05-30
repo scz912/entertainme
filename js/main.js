@@ -23,11 +23,7 @@ async function loadTrendingItems() {
         const data = await res.json();
 
         if (!res.ok) {
-<<<<<<< HEAD
             showToast(data.message || "Failed to load items", "error");
-=======
-            alert(data.message || "Failed to load items");
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
             return;
         }
 
@@ -61,11 +57,7 @@ async function loadTopItems() {
         const data = await res.json();
 
         if (!res.ok) {
-<<<<<<< HEAD
             showToast(data.message || "Failed to load items", "error");
-=======
-            alert(data.message || "Failed to load items");
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
             return;
         }
 
@@ -275,13 +267,8 @@ async function toggleBookmark(id) {
         const token = getToken();
 
         if (!token) {
-<<<<<<< HEAD
             showToast("Please login first to use watchlist.", "warning", 1500);
             setTimeout(() => { window.location.href = "signin.html"; }, 1300);
-=======
-            alert("Please login first to use watchlist.");
-            window.location.href = "signin.html";
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
             return;
         }
 
@@ -294,19 +281,12 @@ async function toggleBookmark(id) {
             const data = await res.json();
 
             if (!res.ok) {
-<<<<<<< HEAD
                 showToast(data.message || "Failed to remove from watchlist", "error");
-=======
-                alert(data.message || "Failed to remove from watchlist");
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
                 return;
             }
 
             watchlist.delete(id);
-<<<<<<< HEAD
             showToast("Removed from watchlist", "info", 1800);
-=======
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
 
         } else {
             const res = await fetch(`${API_BASE_URL}/watchlist`, {
@@ -318,19 +298,12 @@ async function toggleBookmark(id) {
             const data = await res.json();
 
             if (!res.ok) {
-<<<<<<< HEAD
                 showToast(data.message || "Failed to add to watchlist", "error");
-=======
-                alert(data.message || "Failed to add to watchlist");
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
                 return;
             }
 
             watchlist.add(id);
-<<<<<<< HEAD
             showToast("Added to watchlist", "success", 1800);
-=======
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
         }
 
         const cardholder1 = document.getElementById("trendingitem" + id);
@@ -352,11 +325,7 @@ async function toggleBookmark(id) {
 
     } catch (err) {
         console.error("Bookmark error:", err);
-<<<<<<< HEAD
         showToast("Error updating watchlist", "error");
-=======
-        alert("Error updating watchlist");
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
     }
 }
 

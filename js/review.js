@@ -6,11 +6,7 @@ let currentItemId = null;
 document.addEventListener('DOMContentLoaded', async () => {
     currentItemId = localStorage.getItem("id");
     if (!currentItemId) {
-<<<<<<< HEAD
         showToast("No item selected.", "warning");
-=======
-        alert("No item selected.");
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
         return;
     }
     await loadItemDetails(currentItemId);
@@ -26,21 +22,13 @@ async function loadItemDetails(itemId) {
         const res = await fetch(`${API_BASE_URL}/items/${itemId}`);
         const data = await res.json();
         if (!res.ok) {
-<<<<<<< HEAD
             showToast(data.message || "Unable to load item details.", "error");
-=======
-            alert(data.message || "Unable to load item details.");
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
             return;
         }
         renderItemDetails(data);
     } catch (err) {
         console.error(err);
-<<<<<<< HEAD
         showToast("Unable to connect to the backend. Please make sure the server is running.", "error");
-=======
-        alert("Unable to connect to the backend. Please make sure the server is running.");
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
     }
 }
 
@@ -121,11 +109,7 @@ async function loadReviews(itemId) {
 
     } catch (err) {
         console.error(err);
-<<<<<<< HEAD
         showToast("Unable to load reviews. Please check the review data format.", "error");
-=======
-        alert("Unable to load reviews. Please check the review data format.");
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
     }
 }
 // RENDER REVIEWS ON PAGE
@@ -246,23 +230,14 @@ function setupFormSubmission() {
         const comment = document.getElementById("review-text").value;
 
         if (comment.trim() === "") {
-<<<<<<< HEAD
             showToast("Please write a review before submitting.", "warning");
-=======
-            alert("Please write a review before submitting.");
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
             return;
         }
         const token = localStorage.getItem("token");
 
         if (!token) {
-<<<<<<< HEAD
             showToast("Please login before submitting a review.", "warning", 1500);
             setTimeout(() => { window.location.href = "signin.html"; }, 1300);
-=======
-            alert("Please login before submitting a review.");
-            window.location.href = "signin.html";
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
             return;
         }
 
@@ -283,19 +258,11 @@ function setupFormSubmission() {
             const data = await res.json();
 
             if (!res.ok) {
-<<<<<<< HEAD
                 showToast(data.message || "Failed to submit review.", "error");
                 return;
             }
 
             showToast("Review added successfully!", "success");
-=======
-                alert(data.message || "Failed to submit review.");
-                return;
-            }
-
-            alert("Review added successfully!");
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
 
             resetReviewForm();
 
@@ -307,11 +274,7 @@ function setupFormSubmission() {
 
         } catch (error) {
             console.error("Error submitting review:", error);
-<<<<<<< HEAD
             showToast("Something went wrong while submitting review.", "error");
-=======
-            alert("Something went wrong while submitting review.");
->>>>>>> 3def0189ab452073688d0738466ff1be5492494d
         }
     });
 }
