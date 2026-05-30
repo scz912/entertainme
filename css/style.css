@@ -378,6 +378,24 @@ body {
     opacity: 0.72;
 }
 
+/* Override Chrome / Edge / Safari autofill white background */
+.input-group-custom input:-webkit-autofill,
+.input-group-custom input:-webkit-autofill:hover,
+.input-group-custom input:-webkit-autofill:focus,
+.input-group-custom input:-webkit-autofill:active,
+.otp-box:-webkit-autofill,
+.search-box input:-webkit-autofill,
+.form-control:-webkit-autofill,
+.custom-select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+    box-shadow: 0 0 0 1000px transparent inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    caret-color: #ffffff;
+    transition: background-color 9999s ease-out 0s;
+    background-clip: text !important;
+    background-color: transparent !important;
+}
+
 .input-group-custom.input-readonly {
     background: rgba(0, 0, 0, 0.32);
     border-color: rgba(255, 255, 255, 0.06);
