@@ -858,6 +858,40 @@ input::-ms-clear {
     }
 }
 
+#wl-toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(59, 7, 100, 0.95));
+    border: 1px solid rgba(255, 77, 240, 0.35);
+    border-radius: 14px;
+    padding: 14px 20px;
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 77, 240, 0.18);
+    backdrop-filter: blur(12px);
+    opacity: 0;
+    transform: translateY(16px);
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#wl-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+#wl-toast i {
+    font-size: 18px;
+    color: #ff4df0;
+}
+
 #watchlist{
     #watchlist-container{
         transition: all 0.5s;

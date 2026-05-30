@@ -12,8 +12,13 @@ async function loadWatchlist() {
     const token = getToken();
 
     if (!token) {
-        alert("Please login first");
-        window.location.href = "signin.html";
+        document.getElementById("watchlist-count").style.display = "none";
+        document.querySelector(".WL-FilterSlider").style.display = "none";
+        document.getElementById("watchlist-container").innerHTML = `
+            <div class="col-12 text-center mt-5">
+                <p class="text-muted fs-5">Login to see your watchlist</p>
+            </div>
+        `;
         return;
     }
 
@@ -128,7 +133,7 @@ async function removeFromWatchlist(itemId) {
             return;
         }
 
-        alert(data.message || "Removed from watchlist");
+        showToast("Removed from watchlist");
 
         // Reload latest data from MongoDB
         loadWatchlist();
@@ -205,4 +210,12 @@ function generateStars(rating) {
 function viewDetails(id) {
     localStorage.setItem("id", id);
     window.location.href = `review.html?id=${id}`;
+}
+
+// TOAST NOTIFICATION
+function showToast(message) {
+    const toast = document.getElementById("wl-toast");
+    toast.querySelector(".wl-toast-msg").textContent = message;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 3000);
 }
