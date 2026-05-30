@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Google Login</title>
+</head>
+
+<body>
+  <p>Signing you in...</p>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+
+    const token = params.get("token");
+    const user = params.get("user");
+
+    if (token && user) {
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", decodeURIComponent(user));
+
+      window.location.href = "home.html";
+    } else {
+      alert("Google login failed");
+      window.location.href = "signin.html";
+    }
+  </script>
+</body>
+</html>

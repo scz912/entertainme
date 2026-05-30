@@ -14,16 +14,28 @@
             <div style="text-align: center;">
                 <h4>Forgot Password?</h4>
             </div>
-            <form>
-                <div class="text-start mb-1 small opacity-50">Email</div>
+            <form onsubmit="event.preventDefault(); forgotPassword();">
+                <div class="text-start mb-1 small opacity-50">
+                    Email
+                </div>
                 <div class="input-group-custom">
                     <i class="bi bi-envelope"></i>
-                    <input type="email" placeholder="Enter registered email">
+                    <input
+                        type="email"
+                        id="emailInput"
+                        placeholder="Enter registered email">
                 </div>
-            <a href="otp.html" class="btn-auth w-100 mt-4 d-block text-center">Continue</a>
+
+                <button type="submit" class="btn-auth w-100 mt-4">
+                    Continue
+                </button>
+
+            </form>
             <br>
-            <a href="signin.html" class="direct-link"><i class="bi bi-arrow-left"></i> Back to sign in</a>
+            <a href="signin.html" class="direct-link"><i class="bi bi-arrow-left"></i>Back to sign in</a>
         </div>
     </div>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
 </body>
 </html>
