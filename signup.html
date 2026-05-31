@@ -119,6 +119,10 @@
 
     document.getElementById("emailInput").value = tokenPayload.email;
     document.getElementById("emailInput").disabled = true;
+  } else {
+    // No fresh Google token in the URL — drop any stale token from a previous session
+    // so manual sign-ups don't fail with "jwt expired".
+    localStorage.removeItem("googleSignupToken");
   }
 </script>
 </body>

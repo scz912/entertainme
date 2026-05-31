@@ -21,10 +21,15 @@ router.post("/register", async (req, res) => {
     let googleId = null;
 
     if (googleSignupToken) {
-      const decoded = jwt.verify(
-        googleSignupToken,
-        process.env.JWT_SECRET
-      );
+      let decoded;
+      try {
+        decoded = jwt.verify(googleSignupToken, process.env.JWT_SECRET);
+      } catch (err) {
+        return res.status(400).json({
+          message: "Your Google sign-up session has expired. Please sign in with Google again.",
+          code: "GOOGLE_TOKEN_EXPIRED"
+        });
+      }
 
       if (decoded.purpose !== "google-signup") {
         return res.status(400).json({

@@ -69,6 +69,9 @@ async function register() {
     const data = await res.json();
 
     if (!res.ok) {
+      if (data.code === "GOOGLE_TOKEN_EXPIRED") {
+        localStorage.removeItem("googleSignupToken");
+      }
       showToast(data.message || "Registration failed", "error");
       return;
     }
