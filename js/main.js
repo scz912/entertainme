@@ -116,7 +116,7 @@ function applyfilter(filtertype) {
     topchartcontainer.classList.remove("listready");
     var filtercontainer = document.querySelector(`.${filtertype}filter`);
     filtercontainer.classList.add("active");
-    var otherfilters = document.querySelectorAll(`:not(.${filtertype}filter)`);
+    var otherfilters = document.querySelectorAll(`.filterslider .filtercontainer:not(.${filtertype}filter)`);
     otherfilters.forEach(filter => {
         filter.classList.remove("active");
     });
