@@ -17,10 +17,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function loadItemsFromAPI() {
-    try {
-        const container = document.getElementById("results");
-        const spinner = document.getElementById("loadingSpinner");
+    const container = document.getElementById("results");
+    const spinner = document.getElementById("loadingSpinner");
 
+    try {
         container.classList.remove("listready");
         container.innerHTML = "";
 
@@ -44,7 +44,7 @@ async function loadItemsFromAPI() {
 
     } catch (err) {
         console.error(err);
-        spinner.classList.add("d-none");
+        if (spinner) spinner.classList.add("d-none");
 
         document.getElementById("results").innerHTML =
             `<p class="text-center text-danger mt-4">Cannot connect to backend API.</p>`;

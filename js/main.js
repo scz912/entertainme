@@ -10,10 +10,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 async function loadTrendingItems() {
-    try {
-        const trendingcontainer = document.getElementById("trendinglist");
-        const spinner1 = document.getElementById("loadingSpinner1");
+    const trendingcontainer = document.getElementById("trendinglist");
+    const spinner1 = document.getElementById("loadingSpinner1");
 
+    try {
         trendingcontainer.classList.remove("listready");
         trendingcontainer.innerHTML = "";
 
@@ -36,7 +36,7 @@ async function loadTrendingItems() {
 
     } catch (err) {
         console.error(err);
-        spinner1.classList.add("d-none");
+        if (spinner1) spinner1.classList.add("d-none");
 
         document.getElementById("trendinglist").innerHTML =
             `<p class="text-center text-danger mt-4">Cannot connect to backend API.</p>`;
@@ -44,10 +44,10 @@ async function loadTrendingItems() {
 }
 
 async function loadTopItems() {
-    try {
-        const topchartcontainer = document.getElementById("topchartlist");
-        const spinner2 = document.getElementById("loadingSpinner2");
+    const topchartcontainer = document.getElementById("topchartlist");
+    const spinner2 = document.getElementById("loadingSpinner2");
 
+    try {
         topchartcontainer.classList.remove("listready");
         topchartcontainer.innerHTML = "";
 
@@ -70,7 +70,7 @@ async function loadTopItems() {
 
     } catch (err) {
         console.error(err);
-        spinner2.classList.add("d-none");
+        if (spinner2) spinner2.classList.add("d-none");
 
         document.getElementById("topchartlist").innerHTML =
             `<p class="text-center text-danger mt-4">Cannot connect to backend API.</p>`;
